@@ -1,0 +1,353 @@
+/* Fuentes optimizadas (subset latin + woff2) */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/optimized/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/optimized/Playfair.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/optimized/PlayfairItalic.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Alias usado en className font-['Playfair_Display',serif] */
+@font-face {
+  font-family: "Playfair_Display";
+  src: url("/fonts/optimized/Playfair.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair_Display";
+  src: url("/fonts/optimized/PlayfairItalic.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", "Playfair_Display", ui-serif, Georgia, serif;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+}
+
+/* Fade horizontal (estilo SeeOn) */
+.fade-x {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.fade-x-sm {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* Fade vertical (estilo SeeOn) */
+.fade-y {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.fade-y-sm {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.fade-bottom {
+  mask-image: linear-gradient(black 80%, transparent);
+  -webkit-mask-image: linear-gradient(black 80%, transparent);
+}
+
+@keyframes testimonials-marquee-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes testimonials-marquee-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes testimonials-marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes testimonials-marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.testimonials-marquee-up {
+  animation: testimonials-marquee-up 36s linear infinite;
+}
+
+.testimonials-marquee-down {
+  animation: testimonials-marquee-down 36s linear infinite;
+}
+
+.testimonials-marquee-left {
+  animation: testimonials-marquee-left 40s linear infinite;
+  width: max-content;
+}
+
+.testimonials-marquee-right {
+  animation: testimonials-marquee-right 40s linear infinite;
+  width: max-content;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonials-marquee-up,
+  .testimonials-marquee-down,
+  .testimonials-marquee-left,
+  .testimonials-marquee-right {
+    animation: none;
+    transform: none;
+  }
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.fade-bottom-sm {
+  mask-image: linear-gradient(black 90%, transparent);
+  -webkit-mask-image: linear-gradient(black 90%, transparent);
+}
+
+.fade-bottom-xs {
+  mask-image: linear-gradient(black 95%, transparent);
+  -webkit-mask-image: linear-gradient(black 95%, transparent);
+}
+
+/* Swiper — mismo lenguaje que services-carousel */
+.image-cards-swiper {
+  overflow: hidden;
+}
+
+.image-cards-swiper .swiper {
+  overflow: visible;
+}
+
+.image-cards-swiper .swiper-wrapper {
+  align-items: stretch;
+}
+
+.image-cards-swiper .swiper-slide {
+  border: none;
+  background: transparent;
+}
+
+.image-cards-swiper .swiper-slide-active img {
+  box-shadow: 0 18px 40px rgba(18, 28, 44, 0.22);
+  transition: box-shadow 0.55s ease;
+}
+
+.image-cards-swiper .swiper-slide-shadow-left,
+.image-cards-swiper .swiper-slide-shadow-right {
+  display: none;
+}
+
+.services-carousel {
+  overflow: hidden;
+}
+
+.services-carousel .swiper {
+  overflow: visible;
+}
+
+.services-carousel .swiper-wrapper {
+  align-items: stretch;
+}
+
+.services-carousel .swiper-slide {
+  border: none;
+  background: transparent;
+  pointer-events: auto;
+}
+
+/* Énfasis visual sin bloquear clics de las laterales */
+.services-carousel .swiper-slide-active > a {
+  box-shadow: 0 18px 40px rgba(18, 28, 44, 0.22);
+}
+
+.services-carousel .swiper-slide > a {
+  pointer-events: auto;
+  transition: box-shadow 0.55s ease;
+}
+
+.services-carousel .swiper-slide-shadow-left,
+.services-carousel .swiper-slide-shadow-right {
+  display: none;
+  pointer-events: none;
+}
+
+/* ── View Transitions (páginas + imagen de servicio) ── */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.35s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  ::view-transition-old(root) {
+    animation-name: vt-fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: vt-fade-in;
+  }
+
+  ::view-transition-group(service-image),
+  ::view-transition-group(service-title) {
+    animation-duration: 0.45s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  ::view-transition-old(service-image),
+  ::view-transition-new(service-image),
+  ::view-transition-old(service-title),
+  ::view-transition-new(service-title) {
+    animation: none;
+    mix-blend-mode: normal;
+    height: 100%;
+    overflow: clip;
+  }
+
+  .service-vt-image,
+  .service-vt-title {
+    contain: layout;
+  }
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

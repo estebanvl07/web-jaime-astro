@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AppRoot from "../../app/AppRoot";
+import { getServiceBySlug, services } from "../../app/data/services";
+import { siteInfo } from "../../app/data/site";
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const service = slug ? getServiceBySlug(slug) : undefined;
+
+const title = service?.title;
+const description = service
+  ? `${service.title} en Barranquilla. ${service.whatIs.slice(0, 155).trim()}…`
+  : siteInfo.description;
+const path = `/servicios/${slug}`;
+---
+
+<BaseLayout title={title} description={description} path={path}>
+  <div id="app-root">
+    <AppRoot client:only="react">
+      <div
+        slot="fallback"
+        class="flex min-h-dvh items-center justify-center bg-background text-muted-foreground"
+      >
+        Cargando…
+      </div>
+    </AppRoot>
+  </div>
+</BaseLayout>

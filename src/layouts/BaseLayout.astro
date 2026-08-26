@@ -1,0 +1,84 @@
+---
+import "../styles/index.css";
+import { siteInfo, absoluteUrl } from "../app/data/site";
+
+type Props = {
+  title?: string;
+  description?: string;
+  path?: string;
+  image?: string;
+};
+
+const {
+  title,
+  description = siteInfo.description,
+  path = "/",
+  image = siteInfo.ogImagePath,
+} = Astro.props;
+
+const fullTitle = title
+  ? `${title} | ${siteInfo.shortName}`
+  : `${siteInfo.name} | Odontología en Barranquilla`;
+const canonical = absoluteUrl(path);
+const imageUrl = absoluteUrl(image);
+---
+
+<!doctype html>
+<html lang={siteInfo.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={siteInfo.keywords.join(", ")} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={siteInfo.locale} />
+    <meta property="og:site_name" content={siteInfo.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <link rel="icon" type="image/png" href={siteInfo.faviconPath} />
+    <link rel="apple-touch-icon" href={siteInfo.faviconPath} />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#0d85c1" />
+
+    <link
+      rel="preload"
+      href="/fonts/optimized/Inter.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/optimized/Playfair.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {
+      siteInfo.googleSiteVerification ? (
+        <meta
+          name="google-site-verification"
+          content={siteInfo.googleSiteVerification}
+        />
+      ) : null
+    }
+  </head>
+  <body class="min-h-screen bg-background text-foreground antialiased">
+    <slot />
+  </body>
+</html>

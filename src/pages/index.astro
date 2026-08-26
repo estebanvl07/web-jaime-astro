@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AppRoot from "../app/AppRoot";
+---
+
+<BaseLayout path="/">
+  <div id="app-root">
+    <AppRoot client:only="react">
+      <div
+        slot="fallback"
+        class="flex min-h-dvh items-center justify-center bg-background text-muted-foreground"
+      >
+        Cargando…
+      </div>
+    </AppRoot>
+  </div>
+</BaseLayout>

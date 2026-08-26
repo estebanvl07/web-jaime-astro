@@ -1,0 +1,219 @@
+@custom-variant dark (&:is(.dark *));
+
+/* Light */
+:root {
+  --font-size: 16px;
+
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0d85c1;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #e0f2fe;
+  --accent-foreground: #0c4a6e;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --input-background: #f8fafc;
+  --switch-background: #cbd5e1;
+  --ring: #0d85c1;
+  --radius: 0.625rem;
+
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+
+  --chart-1: #0d85c1;
+  --chart-2: #0097b2;
+  --chart-3: #334155;
+  --chart-4: #38bdf8;
+  --chart-5: #64748b;
+
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #0d85c1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #0d85c1;
+
+  /* Brand / landing */
+  --brand: #0d85c1;
+  --brand-teal: #0097b2;
+  --brand-dark: #121c2c;
+  --brand-soft: #c8d7de;
+  --star: #f59e0b;
+  --star-muted: #d1d5db;
+
+  --page-muted: #475569;
+  --page-soft: rgba(13, 133, 193, 0.07);
+  --page-hero: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f5fafc 45%,
+    rgba(13, 133, 193, 0.06) 100%
+  );
+
+  --surface-glass: rgba(255, 255, 255, 0.92);
+  --surface-glass-border: rgba(13, 133, 193, 0.12);
+  --header-shadow: 0 8px 30px rgba(18, 28, 44, 0.1);
+  --spotlight-primary: rgba(13, 133, 193, 0.35);
+  --spotlight-teal: rgba(0, 151, 178, 0.4);
+  --spotlight-mint: rgba(150, 209, 211, 0.45);
+  --spotlight-glow: rgba(255, 255, 255, 0.9);
+}
+
+/* Dark mode desactivado por ahora — dejar variables por si se reactiva
+.dark {
+  --background: #050d1a;
+  --foreground: #eaf4fb;
+  --card: #0b1a2e;
+  --card-foreground: #eaf4fb;
+  --popover: #0b1a2e;
+  --popover-foreground: #eaf4fb;
+  --primary: #0d85c1;
+  --primary-foreground: #ffffff;
+  --secondary: #12253d;
+  --secondary-foreground: #eaf4fb;
+  --muted: #12253d;
+  --muted-foreground: #8fb0c9;
+  --accent: rgba(13, 133, 193, 0.2);
+  --accent-foreground: #ccebff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #1a334d;
+  --input: #1a334d;
+  --input-background: #0b1a2e;
+  --switch-background: #2a4a66;
+  --ring: #3db4e6;
+  --chart-1: #3db4e6;
+  --chart-2: #2dd4bf;
+  --chart-3: #8fb0c9;
+  --chart-4: #0d85c1;
+  --chart-5: #5a7f9c;
+  --sidebar: #0b1a2e;
+  --sidebar-foreground: #eaf4fb;
+  --sidebar-primary: #0d85c1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #12253d;
+  --sidebar-accent-foreground: #eaf4fb;
+  --sidebar-border: #1a334d;
+  --sidebar-ring: #0d85c1;
+  --brand: #3db4e6;
+  --brand-teal: #2dd4bf;
+  --brand-dark: #07111f;
+  --brand-soft: rgba(13, 133, 193, 0.22);
+  --star: #f59e0b;
+  --star-muted: #5a7f9c;
+  --page-muted: #8fb0c9;
+  --page-soft: rgba(13, 133, 193, 0.16);
+  --page-hero: linear-gradient(
+    180deg,
+    #050d1a 0%,
+    #0b1a2e 48%,
+    rgba(13, 133, 193, 0.18) 100%
+  );
+  --surface-glass: rgba(11, 26, 46, 0.92);
+  --surface-glass-border: rgba(61, 180, 230, 0.18);
+  --header-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  --spotlight-primary: rgba(13, 133, 193, 0.4);
+  --spotlight-teal: rgba(45, 212, 191, 0.28);
+  --spotlight-mint: rgba(61, 180, 230, 0.22);
+  --spotlight-glow: rgba(234, 244, 251, 0.35);
+}
+*/
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-brand: var(--brand);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-soft: var(--brand-soft);
+  --color-star: var(--star);
+  --color-star-muted: var(--star-muted);
+  --color-page-muted: var(--page-muted);
+  --color-page-soft: var(--page-soft);
+  --color-surface-glass: var(--surface-glass);
+  --color-surface-glass-border: var(--surface-glass-border);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-serif);
+  }
+
+  html {
+    font-size: var(--font-size);
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+}
