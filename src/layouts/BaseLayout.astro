@@ -69,6 +69,8 @@ const imageUrl = absoluteUrl(image);
       crossorigin
     />
 
+    <slot name="head" />
+
     {
       siteInfo.googleSiteVerification ? (
         <meta

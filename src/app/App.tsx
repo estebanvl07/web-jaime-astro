@@ -22,6 +22,7 @@ import { ImageCardsSwiper } from "@/app/components/ImageCardsSwiper";
 import { ServicesCarousel } from "@/app/components/ServicesCarousel";
 import { TeamGallery } from "@/app/components/TeamGallery";
 import { LazyMount } from "@/app/components/LazyMount";
+import { LazyImage } from "@/app/components/LazyImage";
 import { services as servicesData } from "@/app/data/services";
 import { siteInfo } from "@/app/data/site";
 import {
@@ -318,9 +319,10 @@ function TestimonialCard({
           ) : (
             <>
               {t.image ? (
-                <img
+                <LazyImage
                   src={t.image}
                   alt=""
+                  fetchPriority={isClone ? "low" : "auto"}
                   className="absolute inset-0 h-full w-full object-cover"
                   draggable={false}
                 />
@@ -424,9 +426,10 @@ export default function App() {
             }`}
           >
             <a href="#" className="flex min-w-0 items-center gap-2">
-              <img
+              <LazyImage
                 src={imgLogo}
                 alt="Dr. Jaime Pinzon logo"
+                priority
                 className="h-8 w-auto object-contain sm:h-9"
               />
               <span className="truncate font-['Playfair_Display',serif] text-lg font-semibold tracking-tight sm:text-xl text-primary">
@@ -1126,7 +1129,9 @@ export default function App() {
             viewport={viewport}
             transition={{ duration: 0.5, ease: easeOut }}
           >
-            <TeamGallery members={doctors} />
+            <LazyMount minHeight={460}>
+              <TeamGallery members={doctors} />
+            </LazyMount>
           </motion.div>
         </div>
       </section>

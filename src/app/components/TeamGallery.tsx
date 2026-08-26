@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Instagram, Linkedin } from "lucide-react";
+import { LazyImage } from "@/app/components/LazyImage";
 
 export type TeamMember = {
   name: string;
@@ -109,9 +110,12 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
               className="group relative min-w-0 overflow-hidden rounded-xl bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               style={{ flexShrink: 1 }}
             >
-              <img
+              <LazyImage
                 src={member.img}
                 alt={member.name}
+                width={640}
+                height={800}
+                priority={isActive}
                 className={`absolute inset-0 h-full w-full object-cover object-top transition-[filter,transform] duration-500 ease-out ${
                   isActive
                     ? "scale-100 grayscale-0"

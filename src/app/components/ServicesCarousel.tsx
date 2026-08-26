@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
@@ -11,6 +11,9 @@ import {
   GalleryHorizontal,
 } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { LazyImage } from "@/app/components/LazyImage";
+import { ImageSkeleton } from "@/app/components/ImageSkeleton";
+import { usePreloadImages } from "@/app/hooks/usePreloadImage";
 import { useServiceViewTransition } from "@/app/hooks/useServiceViewTransition";
 import { activateServiceViewTransition } from "@/app/lib/viewTransitions";
 import "swiper/css";
@@ -45,13 +48,12 @@ function ServiceCard({
       onClick={() => activateServiceViewTransition(service.slug)}
       className="group relative block h-full w-full overflow-hidden rounded-2xl"
     >
-      <img
+      <LazyImage
         src={service.image}
         alt={service.title}
         width={800}
         height={533}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
+        priority={priority}
         style={{ viewTransitionName: imageName }}
         className="service-vt-image absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         draggable={false}
@@ -79,11 +81,20 @@ export function ServicesCarousel({
   const rootRef = useRef<HTMLDivElement>(null);
   const [viewMode, setViewMode] = useState<ServicesViewMode>("carousel");
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [inView, setInView] = useState(false);
   const reduceMotion = useReducedMotion();
+
+  const serviceImages = useMemo(
+    () => services.map((service) => service.image),
+    [services],
+  );
+  const preloadStatus = usePreloadImages(serviceImages, true);
+  const imagesReady =
+    preloadStatus === "loaded" || preloadStatus === "error";
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 639px)");
@@ -98,7 +109,7 @@ export function ServicesCarousel({
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "120px", threshold: 0.05 },
+      { rootMargin: "240px", threshold: 0.05 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -107,9 +118,14 @@ export function ServicesCarousel({
   const syncEdges = (instance: SwiperType) => {
     setIsBeginning(instance.isBeginning);
     setIsEnd(instance.isEnd);
+    setActiveIndex(instance.activeIndex);
   };
 
   const useCoverflow = !isMobile && !reduceMotion;
+  const showCarousel = inView && imagesReady;
+
+  const isPrioritySlide = (index: number) =>
+    Math.abs(index - activeIndex) <= 1;
 
   return (
     <div ref={rootRef} className={`w-full ${className}`}>
@@ -158,7 +174,9 @@ export function ServicesCarousel({
             transition={{ duration: reduceMotion ? 0 : 0.28 }}
             className="services-carousel w-full"
           >
-            {inView ? (
+            {!showCarousel ? (
+              <ImageSkeleton className="h-[420px] sm:h-[400px] lg:h-[440px]" />
+            ) : (
               <Swiper
                 key={useCoverflow ? "coverflow" : "slide"}
                 modules={useCoverflow ? [EffectCoverflow] : []}
@@ -198,12 +216,13 @@ export function ServicesCarousel({
                     key={`${service.slug}-${index}`}
                     className="services-carousel-slide !h-[420px] !w-[min(88vw,320px)] !overflow-hidden !rounded-2xl !bg-transparent sm:!h-[400px] sm:!w-[280px] lg:!h-[440px] lg:!w-[320px]"
                   >
-                    <ServiceCard service={service} priority={index < 2} />
+                    <ServiceCard
+                      service={service}
+                      priority={isPrioritySlide(index)}
+                    />
                   </SwiperSlide>
                 ))}
               </Swiper>
-            ) : (
-              <div className="h-[420px] sm:h-[400px] lg:h-[440px]" aria-hidden />
             )}
 
             <div className="mt-4 flex items-center justify-center gap-3">
@@ -236,12 +255,12 @@ export function ServicesCarousel({
             transition={{ duration: reduceMotion ? 0 : 0.28 }}
             className="mx-auto grid max-w-[1320px] grid-cols-1 gap-5 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-10 xl:grid-cols-4"
           >
-            {services.map((service) => (
+            {services.map((service, index) => (
               <div
                 key={service.slug}
                 className="aspect-[3/4] overflow-hidden rounded-2xl"
               >
-                <ServiceCard service={service} />
+                <ServiceCard service={service} priority={index < 4} />
               </div>
             ))}
           </motion.div>

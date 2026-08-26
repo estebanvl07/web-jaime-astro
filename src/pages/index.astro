@@ -1,9 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import AppRoot from "../app/AppRoot";
+import imgHero from "../imports/assets/a8f2c0383b88021a11b45557934c6aacc3594e91.avif?url";
 ---
 
 <BaseLayout path="/">
+  <Fragment slot="head">
+    <link rel="preload" as="image" href={imgHero} type="image/avif" fetchpriority="high" />
+  </Fragment>
   <div id="app-root">
     <AppRoot client:only="react">
       <div

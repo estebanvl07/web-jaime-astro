@@ -4,6 +4,9 @@ import { Autoplay, EffectCoverflow } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
+import { LazyImage } from "@/app/components/LazyImage";
+import { ImageSkeleton } from "@/app/components/ImageSkeleton";
+import { usePreloadImage } from "@/app/hooks/usePreloadImage";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 
@@ -30,6 +33,8 @@ export function ImageCardsSwiper({
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const reduceMotion = useReducedMotion();
+  const preloadStatus = usePreloadImage(imageSrc, true);
+  const imageReady = preloadStatus === "loaded" || preloadStatus === "error";
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 639px)");
@@ -44,7 +49,7 @@ export function ImageCardsSwiper({
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "80px", threshold: 0.15 },
+      { rootMargin: "240px", threshold: 0.05 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -57,18 +62,19 @@ export function ImageCardsSwiper({
   }, [inView, isMobile, reduceMotion, swiper]);
 
   const useCoverflow = !isMobile && !reduceMotion;
+  const showSwiper = inView && imageReady;
 
   return (
     <div ref={rootRef} className={`w-full ${className}`}>
       <div
         className={`image-cards-swiper w-full ${useCoverflow ? "fade-x" : ""}`}
       >
-        {inView ? (
+        {!showSwiper ? (
+          <ImageSkeleton className="h-[420px] sm:h-[400px] lg:h-[440px]" />
+        ) : (
           <Swiper
             key={useCoverflow ? "coverflow" : "slide"}
-            modules={
-              useCoverflow ? [Autoplay, EffectCoverflow] : [Autoplay]
-            }
+            modules={useCoverflow ? [Autoplay, EffectCoverflow] : [Autoplay]}
             effect={useCoverflow ? "coverflow" : "slide"}
             onSwiper={(instance) => {
               setSwiper(instance);
@@ -109,24 +115,18 @@ export function ImageCardsSwiper({
                 key={`${alt}-${index}`}
                 className="!h-[420px] !w-[min(88vw,320px)] !overflow-hidden !rounded-2xl !bg-transparent sm:!h-[400px] sm:!w-[280px] lg:!h-[440px] lg:!w-[320px]"
               >
-                <img
+                <LazyImage
                   src={imageSrc}
                   alt={`${alt} ${index + 1}`}
                   width={800}
                   height={600}
-                  loading="lazy"
-                  decoding="async"
+                  priority={index === CENTER_SLIDE}
                   className="h-full w-full rounded-2xl object-cover"
                   draggable={false}
                 />
               </SwiperSlide>
             ))}
           </Swiper>
-        ) : (
-          <div
-            className="h-[420px] sm:h-[400px] lg:h-[440px]"
-            aria-hidden
-          />
         )}
 
         <div className="mt-4 flex items-center justify-center gap-3">
