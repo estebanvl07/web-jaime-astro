@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { LazyImage } from "@/app/components/LazyImage";
 import { ImageSkeleton } from "@/app/components/ImageSkeleton";
 import { usePreloadImage } from "@/app/hooks/usePreloadImage";
+import { useInViewOnce } from "@/app/hooks/useInViewOnce";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 import "swiper/css";
@@ -29,24 +30,12 @@ export function ImageCardsSwiper({
   alt,
   className = "",
 }: ImageCardsSwiperProps) {
-  const rootRef = useRef<HTMLDivElement>(null);
+  const { ref: rootRef, inView, mounted } = useInViewOnce();
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
-  const [inView, setInView] = useState(false);
   const isMobile = useIsMobile();
   const { lightMotion } = useMotionSettings();
   const preloadStatus = usePreloadImage(imageSrc, true);
   const imageReady = preloadStatus === "loaded" || preloadStatus === "error";
-
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "240px", threshold: 0.05 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!swiper?.autoplay) return;
@@ -55,7 +44,7 @@ export function ImageCardsSwiper({
   }, [inView, isMobile, lightMotion, swiper]);
 
   const useCoverflow = !isMobile && !lightMotion;
-  const showSwiper = inView && imageReady;
+  const showSwiper = mounted && imageReady;
 
   return (
     <div ref={rootRef} className={`w-full ${className}`}>

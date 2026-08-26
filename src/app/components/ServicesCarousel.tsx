@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { LazyImage } from "@/app/components/LazyImage";
 import { ImageSkeleton } from "@/app/components/ImageSkeleton";
 import { usePreloadImages } from "@/app/hooks/usePreloadImage";
+import { useInViewOnce } from "@/app/hooks/useInViewOnce";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 import { useServiceViewTransition } from "@/app/hooks/useServiceViewTransition";
@@ -80,13 +81,12 @@ export function ServicesCarousel({
   services,
   className = "",
 }: ServicesCarouselProps) {
-  const rootRef = useRef<HTMLDivElement>(null);
+  const { ref: rootRef, mounted } = useInViewOnce();
   const [viewMode, setViewMode] = useState<ServicesViewMode>("carousel");
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-  const [inView, setInView] = useState(false);
   const isMobile = useIsMobile();
   const { lightMotion } = useMotionSettings();
 
@@ -98,17 +98,6 @@ export function ServicesCarousel({
   const imagesReady =
     preloadStatus === "loaded" || preloadStatus === "error";
 
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "240px", threshold: 0.05 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   const syncEdges = (instance: SwiperType) => {
     setIsBeginning(instance.isBeginning);
     setIsEnd(instance.isEnd);
@@ -116,7 +105,7 @@ export function ServicesCarousel({
   };
 
   const useCoverflow = !isMobile && !lightMotion;
-  const showCarousel = inView && imagesReady;
+  const showCarousel = mounted && imagesReady;
 
   const isPrioritySlide = (index: number) =>
     Math.abs(index - activeIndex) <= 1;
