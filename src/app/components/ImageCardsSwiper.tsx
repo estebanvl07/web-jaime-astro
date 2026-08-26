@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
 import { LazyImage } from "@/app/components/LazyImage";
 import { ImageSkeleton } from "@/app/components/ImageSkeleton";
 import { usePreloadImage } from "@/app/hooks/usePreloadImage";
-import { useInViewOnce } from "@/app/hooks/useInViewOnce";
-import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 
@@ -30,21 +28,41 @@ export function ImageCardsSwiper({
   alt,
   className = "",
 }: ImageCardsSwiperProps) {
-  const { ref: rootRef, inView, mounted } = useInViewOnce();
+  const rootRef = useRef<HTMLDivElement>(null);
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
-  const isMobile = useIsMobile();
-  const { lightMotion } = useMotionSettings();
+  const [inView, setInView] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const reduceMotion = useReducedMotion();
   const preloadStatus = usePreloadImage(imageSrc, true);
   const imageReady = preloadStatus === "loaded" || preloadStatus === "error";
 
   useEffect(() => {
-    if (!swiper?.autoplay) return;
-    if (inView && !isMobile && !lightMotion) swiper.autoplay.start();
-    else swiper.autoplay.stop();
-  }, [inView, isMobile, lightMotion, swiper]);
+    const mq = window.matchMedia("(max-width: 639px)");
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
-  const useCoverflow = !isMobile && !lightMotion;
-  const showSwiper = mounted && imageReady;
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: "240px", threshold: 0.05 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!swiper?.autoplay) return;
+    if (inView && !isMobile && !reduceMotion) swiper.autoplay.start();
+    else swiper.autoplay.stop();
+  }, [inView, isMobile, reduceMotion, swiper]);
+
+  const useCoverflow = !isMobile && !reduceMotion;
+  const showSwiper = inView && imageReady;
 
   return (
     <div ref={rootRef} className={`w-full ${className}`}>
@@ -60,7 +78,7 @@ export function ImageCardsSwiper({
             effect={useCoverflow ? "coverflow" : "slide"}
             onSwiper={(instance) => {
               setSwiper(instance);
-              if (!inView || isMobile || lightMotion) {
+              if (!inView || isMobile || reduceMotion) {
                 instance.autoplay?.stop();
               }
             }}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   Menu,
   X,
@@ -30,8 +30,26 @@ import {
   buildDentistJsonLd,
   buildWebsiteJsonLd,
 } from "@/app/seo/Seo";
-import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 // import { ThemeToggle } from "@/app/components/ThemeToggle"; // dark mode desactivado
+
+const easeOut = [0.22, 1, 0.36, 1] as const;
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.08 },
+  },
+};
 
 const viewport = { once: true, amount: 0.2, margin: "0px 0px -40px 0px" };
 
@@ -355,14 +373,7 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [playingCardId, setPlayingCardId] = useState<string | null>(null);
-  const {
-    lightMotion,
-    transition,
-    fadeUp,
-    fadeIn,
-    stagger,
-    easeOut,
-  } = useMotionSettings();
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -374,12 +385,14 @@ export default function App() {
     if (!window.location.hash) return;
     const id = window.location.hash.slice(1);
     const timer = window.setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({
-        behavior: lightMotion ? "auto" : "smooth",
-      });
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     }, 80);
     return () => window.clearTimeout(timer);
-  }, [lightMotion]);
+  }, []);
+
+  const transition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 0.65, ease: easeOut };
 
   const homeJsonLd = useMemo(
     () => [buildDentistJsonLd(), buildWebsiteJsonLd()],
@@ -405,7 +418,7 @@ export default function App() {
                 ? "var(--surface-glass-border)"
                 : "transparent",
             }}
-            transition={{ duration: lightMotion ? 0 : 0.28, ease: easeOut }}
+            transition={{ duration: 0.28, ease: easeOut }}
             className={`relative flex items-center justify-between gap-3 border transition-[padding,border-radius,backdrop-filter] duration-300 ${
               scrolled
                 ? "rounded-full px-4 py-2.5 backdrop-blur-md sm:px-5"
@@ -444,9 +457,9 @@ export default function App() {
                   <motion.a
                     href="#contacto"
                     whileHover={
-                      lightMotion ? undefined : { y: -1, scale: 1.02 }
+                      reduceMotion ? undefined : { y: -1, scale: 1.02 }
                     }
-                    whileTap={lightMotion ? undefined : { scale: 0.98 }}
+                    whileTap={reduceMotion ? undefined : { scale: 0.98 }}
                     className="flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-5 py-2.5 text-sm font-semibold text-primary shadow-sm backdrop-blur-sm dark:border-brand/30 dark:bg-card/80 dark:text-brand"
                   >
                     <Calendar size={15} />
@@ -488,15 +501,11 @@ export default function App() {
             <AnimatePresence>
               {menuOpen && (
                 <motion.div
-                  initial={
-                    lightMotion
-                      ? false
-                      : { opacity: 0, y: -8, scale: 0.98 }
-                  }
+                  initial={{ opacity: 0, y: -8, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.98 }}
                   transition={{
-                    duration: lightMotion ? 0 : 0.22,
+                    duration: reduceMotion ? 0 : 0.22,
                     ease: easeOut,
                   }}
                   className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(100%,280px)] origin-top-right overflow-hidden rounded-2xl border border-primary/12 bg-white/95 shadow-xl backdrop-blur-md dark:border-brand/20 dark:bg-card/95"
@@ -506,9 +515,9 @@ export default function App() {
                       <motion.a
                         key={link}
                         href={`#${link.toLowerCase()}`}
-                        initial={lightMotion ? false : { opacity: 0, x: -6 }}
+                        initial={{ opacity: 0, x: -6 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: lightMotion ? 0 : 0.03 * i }}
+                        transition={{ delay: reduceMotion ? 0 : 0.03 * i }}
                         className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-primary/8 hover:text-primary dark:hover:bg-primary/15 dark:hover:text-brand"
                         onClick={() => setMenuOpen(false)}
                       >
@@ -591,24 +600,22 @@ export default function App() {
           {/* Foto médico — ~60% del viewport en mobile */}
           <motion.div
             className="relative z-[2] order-1 mx-auto mb-3 h-[60dvh] min-h-[280px] w-full shrink-0 lg:absolute lg:bottom-0 lg:right-6 lg:order-none lg:mx-0 lg:mb-0 lg:mt-0 lg:h-auto lg:min-h-0 lg:w-[48%] lg:max-w-[520px] xl:right-8 xl:max-w-[560px] 2xl:right-4 2xl:w-[58%] 2xl:max-w-[700px]"
-            initial={
-              lightMotion ? false : { opacity: 0, y: 24, scale: 0.96 }
-            }
+            initial={{ opacity: 0, y: 24, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{
               ...transition,
-              delay: lightMotion ? 0 : 0.15,
-              duration: lightMotion ? 0 : 0.8,
+              delay: reduceMotion ? 0 : 0.15,
+              duration: reduceMotion ? 0 : 0.8,
             }}
           >
             {/* JAIME — solo mobile, detrás de la imagen */}
             <motion.div
               aria-hidden
-              initial={lightMotion ? false : { opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 ...transition,
-                delay: lightMotion ? 0 : 0.25,
+                delay: reduceMotion ? 0 : 0.25,
               }}
               className="pointer-events-none absolute left-1/2 top-[4%] z-0 -translate-x-1/2 lg:hidden"
             >
@@ -640,11 +647,11 @@ export default function App() {
 
             <motion.div
               className="absolute bottom-28 right-2 z-[3] hidden items-center gap-3.5 rounded-2xl border border-white/60 bg-white/90 px-4 py-3.5 shadow-xl backdrop-blur-md dark:border-border/80 dark:bg-card/90 sm:right-6 sm:bottom-32 lg:flex"
-              initial={lightMotion ? false : { opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 ...transition,
-                delay: lightMotion ? 0 : 0.55,
+                delay: reduceMotion ? 0 : 0.55,
               }}
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-teal">
@@ -667,11 +674,11 @@ export default function App() {
 
             <motion.div
               className="absolute left-2 top-[28%] z-[3] hidden items-center gap-3.5 rounded-2xl border border-white/60 bg-white/90 px-4 py-3.5 shadow-xl backdrop-blur-md dark:border-border/80 dark:bg-card/90 sm:-left-4 lg:left-0 lg:flex"
-              initial={lightMotion ? false : { opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 ...transition,
-                delay: lightMotion ? 0 : 0.7,
+                delay: reduceMotion ? 0 : 0.7,
               }}
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-teal">
@@ -696,7 +703,7 @@ export default function App() {
           <motion.div
             className="relative z-[2] order-2 flex max-w-xl flex-col justify-center gap-3 pb-8 sm:gap-4 lg:order-none lg:min-h-[500px] lg:gap-6 lg:pb-16 2xl:min-h-[750px] 2xl:pb-24"
             variants={stagger}
-            initial={lightMotion ? "visible" : "hidden"}
+            initial="hidden"
             animate="visible"
           >
             <motion.div
@@ -707,7 +714,7 @@ export default function App() {
               <span className={`${SECTION_BADGE_CLASS} w-fit max-w-full`}>
                 <RotatingTypewriter
                   phrases={heroBadgePhrases}
-                  disabled={!!lightMotion}
+                  disabled={!!reduceMotion}
                 />
               </span>
             </motion.div>
@@ -741,8 +748,8 @@ export default function App() {
                 href={siteInfo.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={lightMotion ? undefined : { y: -2, scale: 1.02 }}
-                whileTap={lightMotion ? undefined : { scale: 0.98 }}
+                whileHover={reduceMotion ? undefined : { y: -2, scale: 1.02 }}
+                whileTap={reduceMotion ? undefined : { scale: 0.98 }}
                 className="flex items-center justify-center gap-2.5 rounded-full px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-primary/15 bg-primary text-primary-foreground"
               >
                 <WhatsAppIcon />
@@ -750,8 +757,8 @@ export default function App() {
               </motion.a>
               <motion.a
                 href="#servicios"
-                whileHover={lightMotion ? undefined : { y: -2 }}
-                whileTap={lightMotion ? undefined : { scale: 0.98 }}
+                whileHover={reduceMotion ? undefined : { y: -2 }}
+                whileTap={reduceMotion ? undefined : { scale: 0.98 }}
                 className="flex items-center justify-center gap-2 rounded-full border-2 px-8 py-4 text-sm font-semibold border-border text-primary"
               >
                 Nuestros Servicios
@@ -874,7 +881,7 @@ export default function App() {
         </motion.div>
 
         <motion.div
-          initial={lightMotion ? false : { opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewport}
           transition={transition}
@@ -982,10 +989,10 @@ export default function App() {
 
           <motion.div
             className="w-full flex-1 py-2 lg:min-w-0 lg:basis-[48%] lg:py-6"
-            initial={lightMotion ? false : { opacity: 0, x: 36 }}
+            initial={{ opacity: 0, x: 36 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={viewport}
-            transition={{ ...transition, duration: lightMotion ? 0 : 0.75 }}
+            transition={{ ...transition, duration: reduceMotion ? 0 : 0.75 }}
           >
             <LazyMount className="w-full" minHeight={480}>
               <ImageCardsSwiper
@@ -1003,10 +1010,10 @@ export default function App() {
         <div className="mx-auto flex max-w-[1320px] flex-col items-center gap-12 px-6 lg:flex-row lg:items-center lg:gap-16 lg:px-10">
           <motion.div
             className="order-2 w-full flex-1 py-2 lg:order-1 lg:min-w-0 lg:basis-[48%] lg:py-6"
-            initial={lightMotion ? false : { opacity: 0, x: -36 }}
+            initial={{ opacity: 0, x: -36 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={viewport}
-            transition={{ ...transition, duration: lightMotion ? 0 : 0.75 }}
+            transition={{ ...transition, duration: reduceMotion ? 0 : 0.75 }}
           >
             <LazyMount className="w-full" minHeight={480}>
               <ImageCardsSwiper
@@ -1117,10 +1124,10 @@ export default function App() {
           </motion.div>
 
           <motion.div
-            initial={lightMotion ? false : { opacity: 0, y: 20 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewport}
-            transition={{ duration: lightMotion ? 0 : 0.5, ease: easeOut }}
+            transition={{ duration: 0.5, ease: easeOut }}
           >
             <LazyMount minHeight={460}>
               <TeamGallery members={doctors} />
@@ -1220,21 +1227,21 @@ export default function App() {
                   direction: "down" as const,
                 },
               ].map((column) => {
-                const loop = lightMotion
+                const loop = reduceMotion
                   ? column.items
                   : [...column.items, ...column.items];
                 return (
                   <div
                     key={column.direction}
                     className={
-                      lightMotion
+                      reduceMotion
                         ? "relative h-full min-h-0 overflow-y-auto scrollbar-hidden"
                         : "relative h-full min-h-0 overflow-hidden"
                     }
                   >
                     <div
                       className={`flex flex-col gap-3 sm:gap-4 ${
-                        lightMotion
+                        reduceMotion
                           ? ""
                           : column.direction === "up"
                             ? "testimonials-marquee-up"
@@ -1243,7 +1250,7 @@ export default function App() {
                     >
                       {loop.map((t, i) => {
                         const isClone =
-                          !lightMotion && i >= column.items.length;
+                          !reduceMotion && i >= column.items.length;
                         return (
                           <TestimonialCard
                             key={`${column.direction}-${t.id}-${i}`}
@@ -1323,7 +1330,7 @@ export default function App() {
           </motion.div>
 
           <motion.div
-            initial={lightMotion ? false : { opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewport}
             transition={transition}
@@ -1425,7 +1432,7 @@ export default function App() {
                   </span>
                   <motion.span
                     animate={{ rotate: openFaq === i ? 180 : 0 }}
-                    transition={{ duration: lightMotion ? 0 : 0.25 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.25 }}
                     className="shrink-0 text-primary"
                   >
                     <ChevronDown size={18} />
@@ -1435,11 +1442,11 @@ export default function App() {
                   {openFaq === i && (
                     <motion.div
                       key="content"
-                      initial={lightMotion ? false : { height: 0, opacity: 0 }}
+                      initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
-                      exit={lightMotion ? undefined : { height: 0, opacity: 0 }}
+                      exit={{ height: 0, opacity: 0 }}
                       transition={{
-                        duration: lightMotion ? 0 : 0.3,
+                        duration: reduceMotion ? 0 : 0.3,
                         ease: easeOut,
                       }}
                       className="overflow-hidden"

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
@@ -10,13 +10,10 @@ import {
   LayoutGrid,
   GalleryHorizontal,
 } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { LazyImage } from "@/app/components/LazyImage";
 import { ImageSkeleton } from "@/app/components/ImageSkeleton";
 import { usePreloadImages } from "@/app/hooks/usePreloadImage";
-import { useInViewOnce } from "@/app/hooks/useInViewOnce";
-import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 import { useServiceViewTransition } from "@/app/hooks/useServiceViewTransition";
 import { activateServiceViewTransition } from "@/app/lib/viewTransitions";
 import "swiper/css";
@@ -58,7 +55,7 @@ function ServiceCard({
         height={533}
         priority={priority}
         style={{ viewTransitionName: imageName }}
-        className="service-vt-image absolute inset-0 h-full w-full object-cover group-hover:scale-105 sm:transition-transform sm:duration-500"
+        className="service-vt-image absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         draggable={false}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
@@ -81,14 +78,15 @@ export function ServicesCarousel({
   services,
   className = "",
 }: ServicesCarouselProps) {
-  const { ref: rootRef, mounted } = useInViewOnce();
+  const rootRef = useRef<HTMLDivElement>(null);
   const [viewMode, setViewMode] = useState<ServicesViewMode>("carousel");
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-  const isMobile = useIsMobile();
-  const { lightMotion } = useMotionSettings();
+  const [isMobile, setIsMobile] = useState(false);
+  const [inView, setInView] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   const serviceImages = useMemo(
     () => services.map((service) => service.image),
@@ -98,14 +96,33 @@ export function ServicesCarousel({
   const imagesReady =
     preloadStatus === "loaded" || preloadStatus === "error";
 
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: "240px", threshold: 0.05 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const syncEdges = (instance: SwiperType) => {
     setIsBeginning(instance.isBeginning);
     setIsEnd(instance.isEnd);
     setActiveIndex(instance.activeIndex);
   };
 
-  const useCoverflow = !isMobile && !lightMotion;
-  const showCarousel = mounted && imagesReady;
+  const useCoverflow = !isMobile && !reduceMotion;
+  const showCarousel = inView && imagesReady;
 
   const isPrioritySlide = (index: number) =>
     Math.abs(index - activeIndex) <= 1;
@@ -151,10 +168,10 @@ export function ServicesCarousel({
         {viewMode === "carousel" ? (
           <motion.div
             key="carousel"
-            initial={lightMotion ? false : { opacity: 0, y: 12 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={lightMotion ? undefined : { opacity: 0, y: -8 }}
-            transition={{ duration: lightMotion ? 0 : 0.28 }}
+            exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
+            transition={{ duration: reduceMotion ? 0 : 0.28 }}
             className="services-carousel w-full"
           >
             {!showCarousel ? (
@@ -232,10 +249,10 @@ export function ServicesCarousel({
         ) : (
           <motion.div
             key="grid"
-            initial={lightMotion ? false : { opacity: 0, y: 12 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={lightMotion ? undefined : { opacity: 0, y: -8 }}
-            transition={{ duration: lightMotion ? 0 : 0.28 }}
+            exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
+            transition={{ duration: reduceMotion ? 0 : 0.28 }}
             className="mx-auto grid max-w-[1320px] grid-cols-1 gap-5 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-10 xl:grid-cols-4"
           >
             {services.map((service, index) => (
