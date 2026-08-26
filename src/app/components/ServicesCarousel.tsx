@@ -10,10 +10,12 @@ import {
   LayoutGrid,
   GalleryHorizontal,
 } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { LazyImage } from "@/app/components/LazyImage";
 import { ImageSkeleton } from "@/app/components/ImageSkeleton";
 import { usePreloadImages } from "@/app/hooks/usePreloadImage";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 import { useServiceViewTransition } from "@/app/hooks/useServiceViewTransition";
 import { activateServiceViewTransition } from "@/app/lib/viewTransitions";
 import "swiper/css";
@@ -55,7 +57,7 @@ function ServiceCard({
         height={533}
         priority={priority}
         style={{ viewTransitionName: imageName }}
-        className="service-vt-image absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        className="service-vt-image absolute inset-0 h-full w-full object-cover group-hover:scale-105 sm:transition-transform sm:duration-500"
         draggable={false}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
@@ -84,9 +86,9 @@ export function ServicesCarousel({
   const [activeIndex, setActiveIndex] = useState(0);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [inView, setInView] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
+  const { lightMotion } = useMotionSettings();
 
   const serviceImages = useMemo(
     () => services.map((service) => service.image),
@@ -95,14 +97,6 @@ export function ServicesCarousel({
   const preloadStatus = usePreloadImages(serviceImages, true);
   const imagesReady =
     preloadStatus === "loaded" || preloadStatus === "error";
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    const sync = () => setIsMobile(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
 
   useEffect(() => {
     const el = rootRef.current;
@@ -121,7 +115,7 @@ export function ServicesCarousel({
     setActiveIndex(instance.activeIndex);
   };
 
-  const useCoverflow = !isMobile && !reduceMotion;
+  const useCoverflow = !isMobile && !lightMotion;
   const showCarousel = inView && imagesReady;
 
   const isPrioritySlide = (index: number) =>
@@ -168,10 +162,10 @@ export function ServicesCarousel({
         {viewMode === "carousel" ? (
           <motion.div
             key="carousel"
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            initial={lightMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-            transition={{ duration: reduceMotion ? 0 : 0.28 }}
+            exit={lightMotion ? undefined : { opacity: 0, y: -8 }}
+            transition={{ duration: lightMotion ? 0 : 0.28 }}
             className="services-carousel w-full"
           >
             {!showCarousel ? (
@@ -249,10 +243,10 @@ export function ServicesCarousel({
         ) : (
           <motion.div
             key="grid"
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            initial={lightMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-            transition={{ duration: reduceMotion ? 0 : 0.28 }}
+            exit={lightMotion ? undefined : { opacity: 0, y: -8 }}
+            transition={{ duration: lightMotion ? 0 : 0.28 }}
             className="mx-auto grid max-w-[1320px] grid-cols-1 gap-5 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-10 xl:grid-cols-4"
           >
             {services.map((service, index) => (

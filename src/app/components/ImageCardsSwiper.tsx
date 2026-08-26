@@ -3,10 +3,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useReducedMotion } from "framer-motion";
 import { LazyImage } from "@/app/components/LazyImage";
 import { ImageSkeleton } from "@/app/components/ImageSkeleton";
 import { usePreloadImage } from "@/app/hooks/usePreloadImage";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 
@@ -31,18 +32,10 @@ export function ImageCardsSwiper({
   const rootRef = useRef<HTMLDivElement>(null);
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [inView, setInView] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
+  const { lightMotion } = useMotionSettings();
   const preloadStatus = usePreloadImage(imageSrc, true);
   const imageReady = preloadStatus === "loaded" || preloadStatus === "error";
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    const sync = () => setIsMobile(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
 
   useEffect(() => {
     const el = rootRef.current;
@@ -57,11 +50,11 @@ export function ImageCardsSwiper({
 
   useEffect(() => {
     if (!swiper?.autoplay) return;
-    if (inView && !isMobile && !reduceMotion) swiper.autoplay.start();
+    if (inView && !isMobile && !lightMotion) swiper.autoplay.start();
     else swiper.autoplay.stop();
-  }, [inView, isMobile, reduceMotion, swiper]);
+  }, [inView, isMobile, lightMotion, swiper]);
 
-  const useCoverflow = !isMobile && !reduceMotion;
+  const useCoverflow = !isMobile && !lightMotion;
   const showSwiper = inView && imageReady;
 
   return (
@@ -78,7 +71,7 @@ export function ImageCardsSwiper({
             effect={useCoverflow ? "coverflow" : "slide"}
             onSwiper={(instance) => {
               setSwiper(instance);
-              if (!inView || isMobile || reduceMotion) {
+              if (!inView || isMobile || lightMotion) {
                 instance.autoplay?.stop();
               }
             }}

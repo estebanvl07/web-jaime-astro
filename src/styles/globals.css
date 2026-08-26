@@ -351,3 +351,24 @@ h6 {
     animation: none !important;
   }
 }
+
+/* Menos animación en móvil: mejor fluidez en dispositivos táctiles */
+@media (max-width: 639px) {
+  .animate-pulse {
+    animation: none;
+  }
+
+  .image-cards-swiper .swiper-slide-active img,
+  .services-carousel .swiper-slide-active > a,
+  .services-carousel .swiper-slide > a {
+    transition: none;
+  }
+
+  .image-cards-swiper .swiper-slide img {
+    box-shadow: none;
+  }
+
+  .services-carousel .swiper-slide-active > a {
+    box-shadow: 0 8px 24px rgba(18, 28, 44, 0.12);
+  }
+}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Link, useParams, Navigate } from "react-router";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -21,27 +21,14 @@ import {
   serviceImageTransitionName,
   serviceTitleTransitionName,
 } from "@/app/lib/viewTransitions";
-
-const easeOut = [0.22, 1, 0.36, 1] as const;
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const stagger = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.06 },
-  },
-};
+import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 
 const viewport = { once: true, amount: 0.2 };
 
 export default function ServiceDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const service = slug ? getServiceBySlug(slug) : undefined;
-  const reduceMotion = useReducedMotion();
+  const { transition, fadeUp, stagger } = useMotionSettings({ duration: 0.6 });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -67,10 +54,6 @@ export default function ServiceDetailPage() {
   if (!service) {
     return <Navigate to="/" replace />;
   }
-
-  const transition = reduceMotion
-    ? { duration: 0 }
-    : { duration: 0.6, ease: easeOut };
 
   const related = services
     .filter((s) => s.category === service.category && s.slug !== service.slug)

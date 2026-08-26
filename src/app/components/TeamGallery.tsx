@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Instagram, Linkedin } from "lucide-react";
 import { LazyImage } from "@/app/components/LazyImage";
+import { useMotionSettings } from "@/app/hooks/useMotionSettings";
 
 export type TeamMember = {
   name: string;
@@ -21,7 +22,7 @@ const easeOut = [0.22, 1, 0.36, 1] as const;
 
 export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const reduceMotion = useReducedMotion();
+  const { lightMotion } = useMotionSettings({ duration: 0.35 });
   const active = members[activeIndex];
 
   if (!active) return null;
@@ -35,10 +36,10 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
         <AnimatePresence mode="wait">
           <motion.div
             key={active.name}
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            initial={lightMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: easeOut }}
+            exit={lightMotion ? undefined : { opacity: 0, y: -8 }}
+            transition={{ duration: lightMotion ? 0 : 0.35, ease: easeOut }}
           >
             <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               {active.name}
@@ -96,14 +97,14 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
               aria-selected={isActive}
               aria-label={`Ver perfil de ${member.name}`}
               onClick={() => setActiveIndex(index)}
-              layout={!reduceMotion}
+              layout={!lightMotion}
               initial={false}
               animate={{
                 flexGrow: isActive ? 4.2 : 1,
                 flexBasis: 0,
               }}
               transition={
-                reduceMotion
+                lightMotion
                   ? { duration: 0 }
                   : { duration: 0.55, ease: easeOut }
               }
@@ -116,7 +117,11 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
                 width={640}
                 height={800}
                 priority={isActive}
-                className={`absolute inset-0 h-full w-full object-cover object-top transition-[filter,transform] duration-500 ease-out ${
+                className={`absolute inset-0 h-full w-full object-cover object-top ${
+                  lightMotion
+                    ? ""
+                    : "transition-[filter,transform] duration-500 ease-out"
+                } ${
                   isActive
                     ? "scale-100 grayscale-0"
                     : "scale-105 grayscale group-hover:grayscale-[40%]"
@@ -134,9 +139,9 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
               <AnimatePresence>
                 {isActive && (
                   <motion.div
-                    initial={reduceMotion ? false : { opacity: 0 }}
+                    initial={lightMotion ? false : { opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={reduceMotion ? undefined : { opacity: 0 }}
+                    exit={lightMotion ? undefined : { opacity: 0 }}
                     className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/55 via-foreground/15 to-transparent px-3 pb-3 pt-10 lg:hidden"
                   >
                     <p className="truncate text-left text-sm font-semibold text-white">
