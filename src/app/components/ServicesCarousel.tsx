@@ -11,6 +11,7 @@ import {
   GalleryHorizontal,
 } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ServiceImage } from "@/app/components/ServiceImage";
 import { LazyImage } from "@/app/components/LazyImage";
 import { ImageSkeleton } from "@/app/components/ImageSkeleton";
 import { usePreloadImages } from "@/app/hooks/usePreloadImage";
@@ -21,7 +22,9 @@ import "swiper/css/effect-coverflow";
 
 export type ServiceCardItem = {
   title: string;
+  description: string;
   image: string;
+  overlayImage?: string;
   slug: string;
 };
 
@@ -48,28 +51,45 @@ function ServiceCard({
       onClick={() => activateServiceViewTransition(service.slug)}
       className="group relative block h-full w-full overflow-hidden rounded-2xl"
     >
-      <LazyImage
+      <ServiceImage
         src={service.image}
         alt={service.title}
         width={800}
         height={533}
         priority={priority}
+        className="absolute inset-0 h-full w-full"
         style={{ viewTransitionName: imageName }}
-        className="service-vt-image absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        draggable={false}
+        imageClassName="service-vt-image absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
       <span className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/25 text-white backdrop-blur-sm transition-colors group-hover:bg-white/40">
         <ArrowUpRight size={16} strokeWidth={2.25} />
       </span>
 
-      <p
-        style={{ viewTransitionName: titleName }}
-        className="service-vt-title absolute bottom-0 left-0 right-0 p-4 text-sm font-medium leading-snug text-white sm:text-[15px]"
-      >
-        {service.title}
-      </p>
+      <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-4">
+        {service.overlayImage ? (
+          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-[3px] border-white/90 shadow-[0_6px_20px_rgba(0,0,0,0.3)] sm:h-[72px] sm:w-[72px]">
+            <LazyImage
+              src={service.overlayImage}
+              alt="Alineadores dentales"
+              className="h-full w-full object-cover object-center"
+            />
+          </div>
+        ) : null}
+
+        <div className="min-w-0 flex-1 pb-0.5">
+          <p
+            style={{ viewTransitionName: titleName }}
+            className="service-vt-title truncate text-sm font-semibold leading-snug text-white sm:text-[15px]"
+          >
+            {service.title}
+          </p>
+          <p className="mt-1 line-clamp-2 text-xs leading-snug text-white/80 sm:text-[13px]">
+            {service.description}
+          </p>
+        </div>
+      </div>
     </Link>
   );
 }
@@ -89,7 +109,12 @@ export function ServicesCarousel({
   const reduceMotion = useReducedMotion();
 
   const serviceImages = useMemo(
-    () => services.map((service) => service.image),
+    () =>
+      services.flatMap((service) =>
+        service.overlayImage
+          ? [service.image, service.overlayImage]
+          : [service.image],
+      ),
     [services],
   );
   const preloadStatus = usePreloadImages(serviceImages, true);

@@ -7,9 +7,10 @@ import {
   Check,
   Calendar,
 } from "lucide-react";
-import imgHero from "@/imports/assets/a8f2c0383b88021a11b45557934c6aacc3594e91.avif?url";
 import imgLogo from "@/imports/assets/e7e6e6e81c1d84b256dcdd0c0c907a708c46333a.avif?url";
+import { ServiceImage } from "@/app/components/ServiceImage";
 import { getServiceBySlug, services } from "@/app/data/services";
+import { getServiceImage } from "@/app/data/serviceImages";
 import { siteInfo } from "@/app/data/site";
 import {
   Seo,
@@ -75,6 +76,9 @@ export default function ServiceDetailPage() {
   const related = services
     .filter((s) => s.category === service.category && s.slug !== service.slug)
     .slice(0, 3);
+
+  const { image: serviceImage, overlayImage: serviceOverlayImage } =
+    getServiceImage(service.slug);
 
   return (
     <div className="min-h-screen bg-background font-['Inter',sans-serif] text-foreground">
@@ -181,22 +185,20 @@ export default function ServiceDetailPage() {
           </motion.div>
 
           <div className="relative overflow-hidden rounded-[28px]">
-            <img
-              src={imgHero}
+            <ServiceImage
+              src={serviceImage}
+              overlaySrc={serviceOverlayImage}
               alt={service.title}
               width={1280}
               height={853}
-              fetchpriority="high"
-              decoding="async"
+              priority
               style={{
                 viewTransitionName: serviceImageTransitionName(service.slug),
               }}
-              className="service-vt-image aspect-[4/3] w-full object-cover object-top lg:aspect-[5/4]"
+              className="w-full"
+              imageClassName="service-vt-image aspect-[4/3] w-full object-cover object-top lg:aspect-[5/4]"
+              overlayClassName="h-24 w-24 sm:h-28 sm:w-28 lg:h-36 lg:w-36"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-            <p className="absolute bottom-5 left-5 right-5 font-['Playfair_Display',serif] text-lg font-semibold text-white sm:text-xl">
-              Valoración personalizada para tu caso
-            </p>
           </div>
         </div>
       </section>

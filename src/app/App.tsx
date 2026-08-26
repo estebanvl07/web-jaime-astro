@@ -24,6 +24,7 @@ import { TeamGallery } from "@/app/components/TeamGallery";
 import { LazyMount } from "@/app/components/LazyMount";
 import { LazyImage } from "@/app/components/LazyImage";
 import { services as servicesData } from "@/app/data/services";
+import { getServiceImage } from "@/app/data/serviceImages";
 import { siteInfo } from "@/app/data/site";
 import {
   Seo,
@@ -72,11 +73,17 @@ function StarIcon({ filled }: { filled: boolean }) {
   );
 }
 
-const services = servicesData.map((service) => ({
-  title: service.title,
-  slug: service.slug,
-  image: imgHero,
-}));
+const services = servicesData.map((service) => {
+  const { image, overlayImage } = getServiceImage(service.slug);
+
+  return {
+    title: service.title,
+    description: service.whatIs,
+    slug: service.slug,
+    image,
+    overlayImage,
+  };
+});
 
 const doctors = [
   {
