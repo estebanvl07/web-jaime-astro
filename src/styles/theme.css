@@ -1,74 +1,80 @@
 @custom-variant dark (&:is(.dark *));
 
-/* Light */
+/* Porcelain + ink + bronze — clínica boutique, no azul clínico */
 :root {
   --font-size: 16px;
 
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0d85c1;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #e0f2fe;
-  --accent-foreground: #0c4a6e;
+  --porcelain: #faf6f0;
+  --ink: #1c1914;
+  --bronze: #c4a056;
+  --champagne: #e8d5a3;
+  --stone: #e6dfd4;
+
+  --background: #faf6f0;
+  --foreground: #1c1914;
+  --card: #fffcf8;
+  --card-foreground: #1c1914;
+  --popover: #fffcf8;
+  --popover-foreground: #1c1914;
+  --primary: #c4a056;
+  --primary-foreground: #1c1914;
+  --secondary: #f3eee6;
+  --secondary-foreground: #1c1914;
+  --muted: #f3eee6;
+  --muted-foreground: #6b6458;
+  --accent: #f3eee6;
+  --accent-foreground: #8b6b34;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --input-background: #f8fafc;
-  --switch-background: #cbd5e1;
-  --ring: #0d85c1;
+  --border: #e6dfd4;
+  --input: #e6dfd4;
+  --input-background: #fffcf8;
+  --switch-background: #d4cdc2;
+  --ring: #c4a056;
   --radius: 0.625rem;
+  --header-offset: 108px;
 
   --font-weight-medium: 500;
   --font-weight-normal: 400;
 
-  --chart-1: #0d85c1;
-  --chart-2: #0097b2;
-  --chart-3: #334155;
-  --chart-4: #38bdf8;
-  --chart-5: #64748b;
+  --chart-1: #c4a056;
+  --chart-2: #8b6b34;
+  --chart-3: #1c1914;
+  --chart-4: #e8d5a3;
+  --chart-5: #6b6458;
 
-  --sidebar: #f8fafc;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #0d85c1;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #0d85c1;
+  --sidebar: #fffcf8;
+  --sidebar-foreground: #1c1914;
+  --sidebar-primary: #c4a056;
+  --sidebar-primary-foreground: #1c1914;
+  --sidebar-accent: #f3eee6;
+  --sidebar-accent-foreground: #1c1914;
+  --sidebar-border: #e6dfd4;
+  --sidebar-ring: #c4a056;
 
-  /* Brand / landing */
-  --brand: #0d85c1;
-  --brand-teal: #0097b2;
-  --brand-dark: #121c2c;
-  --brand-soft: #c8d7de;
-  --star: #f59e0b;
-  --star-muted: #d1d5db;
+  --brand: #c4a056;
+  --brand-teal: #8b6b34;
+  --brand-dark: #14110e;
+  --brand-soft: #e8d5a3;
+  --star: #c4a056;
+  --star-muted: #d4cdc2;
 
-  --page-muted: #475569;
-  --page-soft: rgba(13, 133, 193, 0.07);
+  --page-muted: #6b6458;
+  --page-soft: rgba(196, 160, 86, 0.1);
   --page-hero: linear-gradient(
     180deg,
-    #ffffff 0%,
-    #f5fafc 45%,
-    rgba(13, 133, 193, 0.06) 100%
+    #faf6f0 0%,
+    #f7f1e8 48%,
+    rgba(196, 160, 86, 0.08) 100%
   );
 
-  --surface-glass: rgba(255, 255, 255, 0.92);
-  --surface-glass-border: rgba(13, 133, 193, 0.12);
-  --header-shadow: 0 8px 30px rgba(18, 28, 44, 0.1);
-  --spotlight-primary: rgba(13, 133, 193, 0.35);
-  --spotlight-teal: rgba(0, 151, 178, 0.4);
-  --spotlight-mint: rgba(150, 209, 211, 0.45);
-  --spotlight-glow: rgba(255, 255, 255, 0.9);
+  --surface-glass: rgba(250, 246, 240, 0.94);
+  --surface-glass-border: rgba(28, 25, 20, 0.08);
+  --header-shadow: 0 8px 28px rgba(28, 25, 20, 0.08);
+  --spotlight-primary: rgba(196, 160, 86, 0.28);
+  --spotlight-teal: rgba(232, 213, 163, 0.35);
+  --spotlight-mint: rgba(196, 160, 86, 0.16);
+  --spotlight-glow: rgba(255, 252, 248, 0.85);
 }
 
 /* Dark mode desactivado por ahora — dejar variables por si se reactiva

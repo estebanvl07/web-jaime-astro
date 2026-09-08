@@ -1,14 +1,10 @@
 import { useEffect, useMemo } from "react";
 import { Link, useParams, Navigate } from "react-router";
 import { motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  Check,
-  Calendar,
-} from "lucide-react";
-import imgLogo from "@/imports/assets/e7e6e6e81c1d84b256dcdd0c0c907a708c46333a.avif?url";
+import { ArrowUpRight, Check, Calendar } from "lucide-react";
 import { ServiceImage } from "@/app/components/ServiceImage";
+import { SiteHeader } from "@/app/components/SiteHeader";
+import { WhatsAppFloat } from "@/app/components/WhatsAppFloat";
 import { getServiceBySlug, services } from "@/app/data/services";
 import { getServiceImage } from "@/app/data/serviceImages";
 import { siteInfo } from "@/app/data/site";
@@ -88,38 +84,17 @@ export default function ServiceDetailPage() {
         path={`/servicios/${service.slug}`}
         jsonLd={serviceJsonLd}
       />
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4 px-6 py-3.5 lg:px-10">
-          <Link
-            to="/"
-            viewTransition
-            onClick={() => activateServiceViewTransition(service.slug)}
-            className="flex min-w-0 items-center gap-2"
-          >
-            <img
-              src={imgLogo}
-              alt={siteInfo.shortName}
-              className="h-8 w-auto object-contain sm:h-9"
-            />
-            <span className="truncate font-['Playfair_Display',serif] text-lg font-semibold tracking-tight text-primary sm:text-xl">
-              {siteInfo.shortName}
-            </span>
-          </Link>
-          <Link
-            to={{ pathname: "/", hash: "servicios" }}
-            viewTransition
-            onClick={() => activateServiceViewTransition(service.slug)}
-            className="inline-flex items-center gap-2 rounded-full border border-primary/20 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/5"
-          >
-            <ArrowLeft size={16} />
-            <span className="hidden sm:inline">Volver a servicios</span>
-            <span className="sm:hidden">Volver</span>
-          </Link>
-        </div>
-      </header>
+      <SiteHeader
+        variant="inner"
+        backLink={{
+          to: { pathname: "/", hash: "servicios" },
+          label: "Volver a servicios",
+          shortLabel: "Volver",
+          onClick: () => activateServiceViewTransition(service.slug),
+        }}
+      />
 
-      {/* HERO */}
-      <section className="relative overflow-hidden pt-[72px]">
+      <section className="relative overflow-hidden pt-[var(--header-offset)]">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -135,9 +110,9 @@ export default function ServiceDetailPage() {
             <motion.span
               variants={fadeUp}
               transition={transition}
-              className="inline-flex w-fit items-center gap-2 rounded-full border border-brand bg-accent px-4 py-1.5 text-xs font-semibold tracking-widest text-brand"
+              className="text-sm font-medium text-brand"
             >
-              {service.category.toUpperCase()}
+              {service.category}
             </motion.span>
 
             <motion.h1
@@ -168,7 +143,7 @@ export default function ServiceDetailPage() {
                 href={siteInfo.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/15"
+                className="btn-gold inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold"
               >
                 <Calendar size={16} />
                 Agendar valoración
@@ -238,8 +213,8 @@ export default function ServiceDetailPage() {
               <ul className="flex flex-col gap-3.5">
                 {service.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand">
-                      <Check size={11} strokeWidth={3} color="white" />
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark">
+                      <Check size={11} strokeWidth={3} color="#fffcf8" />
                     </span>
                     <span className="text-sm leading-relaxed text-muted-foreground sm:text-base">
                       {feature}
@@ -254,8 +229,8 @@ export default function ServiceDetailPage() {
               transition={transition}
               className="rounded-2xl border border-primary/15 bg-page-soft p-6 sm:p-8"
             >
-              <p className="mb-2 text-xs font-semibold tracking-widest text-brand">
-                IDEAL PARA TI SI
+              <p className="mb-2 text-sm font-medium text-brand">
+                Ideal para ti si
               </p>
               <p className="font-['Playfair_Display',serif] text-lg font-semibold leading-snug text-foreground sm:text-xl">
                 {service.idealFor}
@@ -313,19 +288,20 @@ export default function ServiceDetailPage() {
         </section>
       )}
 
-      <footer className="border-t border-border bg-background py-10">
+      <footer className="bg-brand-dark py-10 text-white">
         <div className="mx-auto flex max-w-[1320px] flex-col items-center justify-between gap-4 px-6 text-center sm:flex-row sm:text-left lg:px-10">
           <div>
-            <p className="font-['Playfair_Display',serif] text-lg font-semibold text-primary">
-              {siteInfo.shortName}
+            <p className="font-['Playfair_Display',serif] text-lg font-semibold">
+              Dr. Jaime Pinzón
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-white/65">
               {siteInfo.address} · {siteInfo.phone}
             </p>
           </div>
-          <p className="text-sm text-muted-foreground">{siteInfo.slogan}</p>
+          <p className="text-sm text-white/65">{siteInfo.slogan}</p>
         </div>
       </footer>
+      <WhatsAppFloat />
     </div>
   );
 }

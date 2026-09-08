@@ -1,35 +1,27 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import {
-  Menu,
-  X,
-  ChevronDown,
-  Star,
-  Check,
-  Calendar,
-  ArrowUpRight,
-  Play,
-  MapPin,
-  ExternalLink,
-} from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Star, Check, ArrowUpRight, MapPin, ExternalLink } from "lucide-react";
+import { Link } from "react-router";
 import imgHero from "@/imports/assets/a8f2c0383b88021a11b45557934c6aacc3594e91.avif?url";
-import imgLogo from "@/imports/assets/e7e6e6e81c1d84b256dcdd0c0c907a708c46333a.avif?url";
 import imgClinica from "@/imports/assets/90ebfb78fbf8f207012f653657adadf619c96529.avif?url";
-import imgDoctorFemale from "@/imports/assets/890ab96eccf5036670caa7b94b7722353ee0b062.avif?url";
-import imgDoctorMale from "@/imports/assets/390a25e5fe1e5f9ca887d18144e9fa2e6aaaf821.avif?url";
 import svgPaths from "@/imports/svg-lnp12anmc4";
 import { ImageCardsSwiper } from "@/app/components/ImageCardsSwiper";
 import { ServicesCarousel } from "@/app/components/ServicesCarousel";
 import { TeamGallery } from "@/app/components/TeamGallery";
+import { FaqList } from "@/app/components/FaqList";
 import { LazyMount } from "@/app/components/LazyMount";
-import { LazyImage } from "@/app/components/LazyImage";
+import { SiteHeader } from "@/app/components/SiteHeader";
+import { WhatsAppFloat } from "@/app/components/WhatsAppFloat";
 import { services as servicesData } from "@/app/data/services";
 import { getServiceImage } from "@/app/data/serviceImages";
+import { teamMembers } from "@/app/data/team";
+import { homeFaqs } from "@/app/data/faqs";
 import { siteInfo } from "@/app/data/site";
 import {
   Seo,
   buildDentistJsonLd,
   buildWebsiteJsonLd,
+  buildFaqJsonLd,
 } from "@/app/seo/Seo";
 // import { ThemeToggle } from "@/app/components/ThemeToggle"; // dark mode desactivado
 
@@ -57,19 +49,8 @@ const viewport = { once: true, amount: 0.2, margin: "0px 0px -40px 0px" };
 function WhatsAppIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d={svgPaths.p27c98a00} fill="white" />
+      <path d={svgPaths.p27c98a00} fill="currentColor" />
     </svg>
-  );
-}
-
-function StarIcon({ filled }: { filled: boolean }) {
-  return (
-    <Star
-      size={16}
-      fill={filled ? "var(--star)" : "none"}
-      stroke={filled ? "var(--star)" : "var(--star-muted)"}
-      strokeWidth={1.5}
-    />
   );
 }
 
@@ -85,137 +66,13 @@ const services = servicesData.map((service) => {
   };
 });
 
-const doctors = [
-  {
-    name: "Dra. Elena Gómez",
-    specialty: "Ortodoncia Especialista",
-    img: imgDoctorFemale,
-    bio: "Especialista en ortodoncia con formación internacional. Diseña planes personalizados con alineadores y aparatología avanzada para resultados naturales y estables.",
-    linkedin: "#",
-    instagram: "#",
-  },
-  {
-    name: "Dr. Carlos Ruiz",
-    specialty: "Implantología Avanzada",
-    img: imgDoctorMale,
-    bio: "Referente en implantología y rehabilitación oral. Combina planificación digital 3D con cirugía mínimamente invasiva para recuperar función y estética con precisión.",
-    linkedin: "#",
-    instagram: "#",
-  },
-  {
-    name: "Dra. Ana Torres",
-    specialty: "Estética Dental",
-    img: imgDoctorFemale,
-    bio: "Enfocada en diseño de sonrisa y odontología cosmética. Trabaja con carillas, blanqueamiento y armonización facial para lograr sonrisas equilibradas y luminosas.",
-    linkedin: "#",
-    instagram: "#",
-  },
-  {
-    name: "Dr. Miguel Ángel",
-    specialty: "Periodoncia Clínica",
-    img: imgDoctorMale,
-    bio: "Experto en salud gingival y tejidos periimplantarios. Prioriza prevención, tratamientos regenerativos y un acompañamiento cercano en cada etapa del cuidado.",
-    linkedin: "#",
-    instagram: "#",
-  },
-];
-
-type Testimonial = {
-  id: string;
-  name: string;
-  role: string;
-  text: string;
-  rating: number;
-  /** Imagen opcional dentro de la card */
-  image?: string;
-  /** Video opcional (mp4/webm). Si existe, tiene prioridad sobre image como media principal */
-  video?: string;
-};
-
-const testimonials: Testimonial[] = [
-  {
-    id: "maria",
-    name: "María Fernández",
-    role: "Paciente — Alineadores",
-    text: "Increíble experiencia desde el primer momento. El equipo es muy profesional y los resultados superaron mis expectativas. Mi sonrisa nunca había lucido tan bien.",
-    rating: 5,
-    image: imgDoctorFemale,
-  },
-  {
-    id: "juan",
-    name: "Juan Sebastián",
-    role: "Paciente — Implante Dental",
-    text: "El Dr. Ruiz me explicó todo el proceso con mucha paciencia. El implante quedó perfecto y me siento mucho más seguro al sonreír. Lo recomiendo totalmente.",
-    rating: 5,
-    // video: "/videos/testimonio-juan.mp4",
-    image: imgClinica,
-  },
-  {
-    id: "catalina",
-    name: "Catalina Morales",
-    role: "Paciente — Diseño de Sonrisa",
-    text: "Un ambiente completamente diferente a cualquier clínica dental que haya visitado. Lujoso, tranquilo y con tecnología de punta. Vale cada centavo.",
-    rating: 5,
-  },
-  {
-    id: "andres",
-    name: "Andrés López",
-    role: "Paciente — Blanqueamiento",
-    text: "El resultado fue natural y sin sensibilidad. Me sentí acompañado en cada cita y salí con una sonrisa mucho más luminosa de lo que esperaba.",
-    rating: 5,
-    image: imgHero,
-  },
-  {
-    id: "valentina",
-    name: "Valentina Ríos",
-    role: "Paciente — Ortodoncia",
-    text: "Desde la primera valoración noté el nivel de detalle. El plan fue claro, el seguimiento impecable y hoy sonrío con total confianza.",
-    rating: 5,
-  },
-  {
-    id: "diego",
-    name: "Diego Ramírez",
-    role: "Paciente — Periodoncia",
-    text: "Trato humano, puntualidad y tecnología de primer nivel. Resolvieron mi molestia gingival y me dieron recomendaciones fáciles de seguir.",
-    rating: 5,
-    image: imgDoctorMale,
-  },
-];
-
-const faqs = [
-  {
-    question: "¿Qué tipos de implantes dentales utilizan?",
-    answer:
-      "Trabajamos exclusivamente con implantes de titanio de grado médico de marcas certificadas internacionalmente como Nobel Biocare y Straumann. Cada implante es seleccionado según las necesidades individuales del paciente para garantizar la mejor integración osea y durabilidad a largo plazo.",
-  },
-  {
-    question: "¿Cuánto tiempo dura el tratamiento de alineadores invisibles?",
-    answer:
-      "El tiempo varía según la complejidad del caso, generalmente entre 6 a 18 meses. Durante tu primera consulta realizamos un escáner 3D para proyectar tu sonrisa final y estimar la duración exacta de tu tratamiento personalizado.",
-  },
-  {
-    question: "¿Los tratamientos son dolorosos?",
-    answer:
-      "Utilizamos técnicas de anestesia avanzadas y materiales modernos que minimizan significativamente las molestias. La mayoría de nuestros pacientes reportan muy poca incomodidad durante y después de los procedimientos gracias a nuestro enfoque en odontología sin dolor.",
-  },
-  {
-    question: "¿Tienen financiamiento disponible?",
-    answer:
-      "Sí, ofrecemos planes de pago flexibles y financiamiento sin intereses hasta 12 meses. Trabajamos con las principales aseguradoras y tarjetas de crédito para hacer que tu tratamiento sea accesible sin comprometer la calidad.",
-  },
-];
-
-const navLinks = ["Servicios", "Equipo", "Testimonios", "Ubicación", "Contacto"];
-
-const SECTION_BADGE_CLASS =
-  "inline-flex items-center rounded-full border border-brand bg-accent px-4 py-1.5 text-xs font-semibold tracking-widest text-brand";
+const SECTION_BADGE_CLASS = "text-sm font-medium text-brand";
 
 const heroBadgePhrases = [
-  "ODONTOLOGÍA ESPECIALIZADA",
-  "DESDE 2015",
-  "TU MEJOR SONRISA",
-  "ATENCIÓN PERSONALIZADA",
-  "SALUD ORAL INTEGRAL",
+  "Odontología especializada",
+  "Desde 2015 en Barranquilla",
+  "Atención personalizada",
+  "Salud oral integral",
 ];
 
 function RotatingTypewriter({
@@ -292,101 +149,32 @@ function RotatingTypewriter({
   );
 }
 
-function TestimonialCard({
-  t,
-  isClone = false,
-  isPlaying = false,
-  onPlay,
-  className = "",
-}: {
-  t: Testimonial;
-  isClone?: boolean;
-  isPlaying?: boolean;
-  onPlay?: () => void;
-  className?: string;
-}) {
-  const hasMedia = Boolean(t.image || t.video);
-
+function GoogleMark() {
   return (
-    <article
-      className={`overflow-hidden rounded-2xl border border-border bg-card shadow-sm ${className}`}
-      aria-hidden={isClone}
-    >
-      {hasMedia && (
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-          {isPlaying ? (
-            <video
-              className="absolute inset-0 h-full w-full object-cover"
-              src={t.video}
-              poster={t.image}
-              controls
-              autoPlay
-              playsInline
-            />
-          ) : (
-            <>
-              {t.image ? (
-                <LazyImage
-                  src={t.image}
-                  alt=""
-                  fetchPriority={isClone ? "low" : "auto"}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  draggable={false}
-                />
-              ) : t.video ? (
-                <div className="absolute inset-0 bg-muted" />
-              ) : null}
-              {t.video && !isClone && onPlay ? (
-                <button
-                  type="button"
-                  onClick={onPlay}
-                  className="absolute inset-0 flex items-center justify-center bg-foreground/15 transition-colors hover:bg-foreground/25"
-                  aria-label={`Reproducir video de ${t.name}`}
-                >
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-primary shadow-md transition-transform hover:scale-105">
-                    <Play size={18} fill="currentColor" className="ml-0.5" />
-                  </span>
-                </button>
-              ) : null}
-            </>
-          )}
-        </div>
-      )}
-
-      <div className="p-5 sm:p-6">
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <div>
-            <p className="font-['Playfair_Display',serif] text-base font-bold text-foreground">
-              {t.name}
-            </p>
-            <p className="mt-0.5 text-xs text-muted-foreground/70">{t.role}</p>
-          </div>
-          <div className="flex shrink-0 gap-0.5">
-            {Array.from({ length: 5 }).map((_, j) => (
-              <StarIcon key={j} filled={j < t.rating} />
-            ))}
-          </div>
-        </div>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          {t.text}
-        </p>
-      </div>
-    </article>
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      />
+    </svg>
   );
 }
 
 export default function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [playingCardId, setPlayingCardId] = useState<string | null>(null);
   const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (!window.location.hash) return;
@@ -402,155 +190,17 @@ export default function App() {
     : { duration: 0.65, ease: easeOut };
 
   const homeJsonLd = useMemo(
-    () => [buildDentistJsonLd(), buildWebsiteJsonLd()],
+    () => [buildDentistJsonLd(), buildWebsiteJsonLd(), buildFaqJsonLd(homeFaqs)],
     [],
   );
 
   return (
     <div className="min-h-screen bg-background font-['Inter',sans-serif] text-foreground transition-colors duration-300">
       <Seo path="/" jsonLd={homeJsonLd} />
-      {/* HEADER */}
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
-        <div className="pointer-events-auto mx-auto max-w-[1320px] px-4 pt-3 sm:px-6 sm:pt-4 lg:px-12 xl:px-16 2xl:px-12">
-          <motion.div
-            initial={false}
-            animate={{
-              backgroundColor: scrolled
-                ? "var(--surface-glass)"
-                : "transparent",
-              boxShadow: scrolled
-                ? "var(--header-shadow)"
-                : "0 0 0 transparent",
-              borderColor: scrolled
-                ? "var(--surface-glass-border)"
-                : "transparent",
-            }}
-            transition={{ duration: 0.28, ease: easeOut }}
-            className={`relative flex items-center justify-between gap-3 border transition-[padding,border-radius,backdrop-filter] duration-300 ${
-              scrolled
-                ? "rounded-full px-4 py-2.5 backdrop-blur-md sm:px-5"
-                : "rounded-none bg-transparent px-1 py-2 backdrop-blur-0"
-            }`}
-          >
-            <a href="#" className="flex min-w-0 items-center gap-2">
-              <LazyImage
-                src={imgLogo}
-                alt="Dr. Jaime Pinzon logo"
-                priority
-                className="h-8 w-auto object-contain sm:h-9"
-              />
-              <span className="truncate font-['Playfair_Display',serif] text-lg font-semibold tracking-tight sm:text-xl text-primary">
-                {siteInfo.shortName}
-              </span>
-            </a>
+      <SiteHeader />
 
-            {/* Top: links + CTA visibles */}
-            {!scrolled && (
-              <>
-                <nav className="hidden items-center gap-8 md:flex">
-                  {navLinks.map((link) => (
-                    <a
-                      key={link}
-                      href={`#${link.toLowerCase()}`}
-                      className="text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-primary"
-                    >
-                      {link}
-                    </a>
-                  ))}
-                </nav>
-
-                <div className="hidden items-center gap-3 md:flex">
-                  {/* <ThemeToggle scrolled={false} /> */}
-                  <motion.a
-                    href="#contacto"
-                    whileHover={
-                      reduceMotion ? undefined : { y: -1, scale: 1.02 }
-                    }
-                    whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                    className="flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-5 py-2.5 text-sm font-semibold text-primary shadow-sm backdrop-blur-sm dark:border-brand/30 dark:bg-card/80 dark:text-brand"
-                  >
-                    <Calendar size={15} />
-                    Agendar Cita
-                  </motion.a>
-                </div>
-
-                <div className="flex items-center gap-2 md:hidden">
-                  {/* <ThemeToggle scrolled={false} /> */}
-                  <button
-                    type="button"
-                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/70 text-foreground shadow-sm backdrop-blur-sm hover:bg-white dark:bg-secondary dark:text-foreground dark:hover:bg-border"
-                    onClick={() => setMenuOpen((open) => !open)}
-                    aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-                    aria-expanded={menuOpen}
-                  >
-                    {menuOpen ? <X size={20} /> : <Menu size={20} />}
-                  </button>
-                </div>
-              </>
-            )}
-
-            {/* Scroll: burger */}
-            {scrolled && (
-              <div className="flex items-center gap-2">
-                {/* <ThemeToggle scrolled /> */}
-                <button
-                  type="button"
-                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/15 dark:bg-primary/15 dark:text-brand dark:hover:bg-primary/20"
-                  onClick={() => setMenuOpen((open) => !open)}
-                  aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-                  aria-expanded={menuOpen}
-                >
-                  {menuOpen ? <X size={20} /> : <Menu size={20} />}
-                </button>
-              </div>
-            )}
-
-            <AnimatePresence>
-              {menuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                  transition={{
-                    duration: reduceMotion ? 0 : 0.22,
-                    ease: easeOut,
-                  }}
-                  className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(100%,280px)] origin-top-right overflow-hidden rounded-2xl border border-primary/12 bg-white/95 shadow-xl backdrop-blur-md dark:border-brand/20 dark:bg-card/95"
-                >
-                  <div className="flex flex-col p-2">
-                    {navLinks.map((link, i) => (
-                      <motion.a
-                        key={link}
-                        href={`#${link.toLowerCase()}`}
-                        initial={{ opacity: 0, x: -6 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: reduceMotion ? 0 : 0.03 * i }}
-                        className="rounded-xl px-3.5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-primary/8 hover:text-primary dark:hover:bg-primary/15 dark:hover:text-brand"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        {link}
-                      </motion.a>
-                    ))}
-                    <div className="mt-1 border-t border-border px-1 pb-1 pt-2">
-                      <a
-                        href="#contacto"
-                        className="flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        <Calendar size={15} />
-                        Agendar Cita
-                      </a>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        </div>
-      </header>
-
-      {/* HERO + STATS (una sola sección, sin overflow que genere segundo scroll) */}
-      <section className="relative overflow-x-clip pt-[72px]">
+      {/* HERO + STATS */}
+      <section className="relative overflow-x-clip pt-[var(--header-offset)]">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -559,13 +209,12 @@ export default function App() {
           }}
         />
 
-        {/* Spotlight superior — azul claro para resaltar JAIME */}
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 z-0 h-[280px] w-[140%] max-w-none -translate-x-1/2 rounded-full opacity-90 blur-[70px] sm:h-[340px] sm:blur-[90px] lg:h-[420px]"
+          className="pointer-events-none absolute left-1/2 top-0 z-0 h-[280px] w-[140%] max-w-none -translate-x-1/2 rounded-full opacity-80 blur-[70px] sm:h-[340px] sm:blur-[90px] lg:h-[420px]"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 0%, rgba(125, 211, 252, 0.75) 0%, rgba(56, 189, 248, 0.35) 35%, transparent 70%)",
+              "radial-gradient(ellipse at 50% 0%, rgba(232, 213, 163, 0.55) 0%, rgba(196, 160, 86, 0.18) 38%, transparent 70%)",
           }}
         />
 
@@ -603,7 +252,7 @@ export default function App() {
           }}
         />
 
-        <div className="relative z-[1] mx-auto flex min-h-[calc(100dvh-72px)] w-full max-w-[1320px] flex-col px-6 pt-1 sm:px-8 lg:block lg:min-h-[500px] lg:px-12 lg:pt-14 xl:px-16 2xl:min-h-[750px] 2xl:px-12 2xl:pt-16">
+        <div className="relative z-[1] mx-auto flex min-h-[calc(100dvh-var(--header-offset))] w-full max-w-[1320px] flex-col px-6 pt-1 sm:px-8 lg:block lg:min-h-[500px] lg:px-12 lg:pt-14 xl:px-16 2xl:min-h-[750px] 2xl:px-12 2xl:pt-16">
           {/* Foto médico — ~60% del viewport en mobile */}
           <motion.div
             className="relative z-[2] order-1 mx-auto mb-3 h-[60dvh] min-h-[280px] w-full shrink-0 lg:absolute lg:bottom-0 lg:right-6 lg:order-none lg:mx-0 lg:mb-0 lg:mt-0 lg:h-auto lg:min-h-0 lg:w-[48%] lg:max-w-[520px] xl:right-8 xl:max-w-[560px] 2xl:right-4 2xl:w-[58%] 2xl:max-w-[700px]"
@@ -624,13 +273,13 @@ export default function App() {
                 ...transition,
                 delay: reduceMotion ? 0 : 0.25,
               }}
-              className="pointer-events-none absolute left-1/2 top-[4%] z-0 -translate-x-1/2 lg:hidden"
+              className="pointer-events-none absolute left-1/2 top-[4%] z-0 -translate-x-1/2 lg:top-[-2%]"
             >
               <h4
-                className="-mr-[0.28em] whitespace-nowrap font-['Playfair_Display',serif] text-[clamp(3.5rem,28vw,10rem)] font-black uppercase leading-none tracking-[0.28em]"
+                className="-mr-[0.28em] whitespace-nowrap font-['Playfair_Display',serif] text-[clamp(3.5rem,28vw,10rem)] font-black uppercase leading-none tracking-[0.22em]"
                 style={{
                   background:
-                    "linear-gradient(to bottom, #ffffff 0%, #ffffff 28%, rgba(255,255,255,0) 100%)",
+                    "linear-gradient(to bottom, #c4a056 0%, #c4a056 22%, rgba(196,160,86,0) 100%)",
                   WebkitBackgroundClip: "text",
                   backgroundClip: "text",
                   color: "transparent",
@@ -665,7 +314,7 @@ export default function App() {
                 <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
                   <path
                     d={svgPaths.p3e30af00}
-                    fill="var(--primary-foreground)"
+                    fill="#fffcf8"
                   />
                 </svg>
               </div>
@@ -692,7 +341,7 @@ export default function App() {
                 <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
                   <path
                     d={svgPaths.p3e30af00}
-                    fill="var(--primary-foreground)"
+                    fill="#fffcf8"
                   />
                 </svg>
               </div>
@@ -733,8 +382,7 @@ export default function App() {
             >
               Cada sonrisa tiene
               <br />
-              una{" "}
-              <span className="italic font-bold text-primary">historia</span>
+              una historia
             </motion.h1>
 
             <motion.p
@@ -757,18 +405,18 @@ export default function App() {
                 rel="noopener noreferrer"
                 whileHover={reduceMotion ? undefined : { y: -2, scale: 1.02 }}
                 whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                className="flex items-center justify-center gap-2.5 rounded-full px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-primary/15 bg-primary text-primary-foreground"
+                className="btn-gold flex items-center justify-center gap-2.5 rounded-full px-8 py-4 text-sm font-semibold"
               >
                 <WhatsAppIcon />
-                Contactar por WhatsApp
+                Agenda tu cita
               </motion.a>
               <motion.a
                 href="#servicios"
                 whileHover={reduceMotion ? undefined : { y: -2 }}
                 whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                className="flex items-center justify-center gap-2 rounded-full border-2 px-8 py-4 text-sm font-semibold border-border text-primary"
+                className="flex items-center justify-center gap-2 rounded-full border border-foreground/15 px-8 py-4 text-sm font-semibold text-foreground"
               >
-                Nuestros Servicios
+                Ver tratamientos
               </motion.a>
             </motion.div>
           </motion.div>
@@ -842,7 +490,7 @@ export default function App() {
             transition={transition}
             className={`${SECTION_BADGE_CLASS} mb-5`}
           >
-            TRATAMIENTOS
+            Tratamientos
           </motion.span>
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
@@ -874,15 +522,9 @@ export default function App() {
                 función y transformar la estética de la sonrisa. Cada tratamiento
                 comienza con una valoración personalizada.
               </p>
-              <a
-                href="#servicios"
-                className="inline-flex items-center gap-3 self-start rounded-full pl-5 pr-1.5 py-1.5 text-sm font-semibold text-foreground transition-opacity hover:opacity-90 bg-page-soft"
-              >
-                Explorar tratamientos
-                <span className="w-9 h-9 rounded-full flex items-center justify-center text-white bg-brand-dark">
-                  <ArrowUpRight size={16} strokeWidth={2.25} />
-                </span>
-              </a>
+              <p className="text-sm text-muted-foreground">
+                {services.length} tratamientos disponibles
+              </p>
             </motion.div>
           </div>
         </motion.div>
@@ -917,7 +559,7 @@ export default function App() {
               transition={transition}
               className={`${SECTION_BADGE_CLASS} mb-6`}
             >
-              SOBRE NOSOTROS
+              Sobre nosotros
             </motion.span>
             <motion.h2
               variants={fadeUp}
@@ -954,16 +596,18 @@ export default function App() {
               className="flex flex-col gap-3 sm:flex-row"
             >
               <a
-                href="#contacto"
-                className="flex items-center justify-center rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground text-white transition-all hover:opacity-90"
+                href="#equipo"
+                className="flex items-center justify-center rounded-full border border-foreground/15 px-7 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
               >
-                Saber más →
+                Conocer al equipo
               </a>
               <a
-                href="#contacto"
-                className="flex items-center justify-center rounded-full border-2 border-border px-7 py-3.5 text-sm font-semibold text-primary transition-all hover:bg-primary/5"
+                href={siteInfo.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold flex items-center justify-center rounded-full px-7 py-3.5 text-sm font-semibold"
               >
-                Agendar ahora
+                Agenda tu cita
               </a>
             </motion.div>
 
@@ -1043,7 +687,7 @@ export default function App() {
               transition={transition}
               className={`${SECTION_BADGE_CLASS} mb-6`}
             >
-              NUESTRO ENFOQUE
+              Nuestro enfoque
             </motion.span>
             <motion.h2
               variants={fadeUp}
@@ -1083,8 +727,8 @@ export default function App() {
                   transition={transition}
                   className="flex items-center gap-3"
                 >
-                  <div className="flex items-center justify-center rounded-full shrink-0 w-5 h-5 bg-brand">
-                    <Check size={11} strokeWidth={3} color="white" />
+                  <div className="flex items-center justify-center rounded-full shrink-0 w-5 h-5 bg-brand-dark">
+                    <Check size={11} strokeWidth={3} color="#fffcf8" />
                   </div>
                   <span className="text-sm font-semibold text-primary">
                     {feature}
@@ -1125,8 +769,9 @@ export default function App() {
               transition={transition}
               className="text-base leading-relaxed text-muted-foreground lg:text-lg"
             >
-              Especialistas con formación internacional. Conoce a cada
-              profesional y el enfoque que aporta a tu tratamiento.
+              Un equipo especializado en ortodoncia, periodoncia y
+              odontología integral, con más de 18 años de experiencia
+              profesional.
             </motion.p>
           </motion.div>
 
@@ -1137,20 +782,17 @@ export default function App() {
             transition={{ duration: 0.5, ease: easeOut }}
           >
             <LazyMount minHeight={460}>
-              <TeamGallery members={doctors} />
+              <TeamGallery members={teamMembers} />
             </LazyMount>
           </motion.div>
         </div>
       </section>
 
       {/* TESTIMONIALS SECTION */}
-      <section
-        id="testimonios"
-        className="flex min-h-0 flex-col bg-background py-16 lg:h-[90dvh] lg:max-h-[860px] lg:py-20"
-      >
-        <div className="mx-auto flex h-full w-full max-w-[1320px] flex-col gap-10 px-6 lg:flex-row lg:items-stretch lg:gap-16 lg:px-10">
+      <section id="testimonios" className="bg-background py-20 lg:py-28">
+        <div className="mx-auto grid max-w-[1320px] items-center gap-12 px-6 lg:grid-cols-[1fr_minmax(0,520px)] lg:gap-16 lg:px-10">
           <motion.div
-            className="z-10 flex w-full shrink-0 flex-col justify-center gap-8 self-start lg:sticky lg:top-28 lg:w-[38%] lg:max-w-md"
+            className="flex flex-col gap-8"
             initial="hidden"
             whileInView="visible"
             viewport={viewport}
@@ -1162,23 +804,24 @@ export default function App() {
                 transition={transition}
                 className={`${SECTION_BADGE_CLASS} mb-6`}
               >
-                CLÍNICA BOUTIQUE
+                Reseñas
               </motion.span>
               <motion.h2
                 variants={fadeUp}
                 transition={transition}
                 className="mb-4 font-['Playfair_Display',serif] text-4xl font-semibold text-foreground lg:text-5xl"
               >
-                Testimonios
+                Lo que dicen
+                <br className="hidden sm:block" /> nuestros pacientes
               </motion.h2>
               <motion.p
                 variants={fadeUp}
                 transition={transition}
-                className="text-base leading-relaxed text-muted-foreground lg:text-lg"
+                className="max-w-xl text-base leading-relaxed text-muted-foreground lg:text-lg"
               >
-                Ofrecemos una gama completa de tratamientos dentales
-                personalizados con las últimas tecnologías para garantizar
-                resultados óptimos y una experiencia confortable.
+                Cada tratamiento comienza con confianza. Si ya nos visitaste,
+                tu reseña en Google ayuda a otras personas a dar el primer
+                paso hacia una sonrisa más saludable.
               </motion.p>
             </div>
 
@@ -1189,95 +832,64 @@ export default function App() {
             >
               <div>
                 <p className="font-['Playfair_Display',serif] text-5xl font-semibold text-foreground">
-                  52+
+                  {siteInfo.successfulTreatments}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Testimonios
+                  Tratamientos exitosos
                 </p>
               </div>
               <div>
                 <p className="font-['Playfair_Display',serif] text-5xl font-semibold text-foreground">
-                  1M+
+                  Desde {siteInfo.sinceYear}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Clientes satisfechos
+                  Años de experiencia
                 </p>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* Mobile: scroll nativo (sin marquee infinito = menos jank) */}
-          <div className="relative w-full lg:hidden">
-            <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hidden">
-              {testimonials.map((t) => (
-                <TestimonialCard
-                  key={`mobile-${t.id}`}
-                  t={t}
-                  isPlaying={Boolean(t.video) && playingCardId === t.id}
-                  onPlay={() => setPlayingCardId(t.id)}
-                  className="w-[min(82vw,300px)] shrink-0 snap-start"
-                />
-              ))}
+          <motion.article
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewport}
+            transition={transition}
+            className="rounded-[28px] border border-border bg-card p-6 shadow-sm sm:p-8"
+          >
+            <div className="mb-5 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <GoogleMark />
+                <p className="text-sm font-semibold text-foreground">
+                  Reseñas en Google
+                </p>
+              </div>
+              <div className="flex gap-0.5 text-[var(--star)]">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} size={16} fill="currentColor" strokeWidth={0} />
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* Desktop: columnas verticales */}
-          <div className="fade-y-sm relative hidden h-full min-h-0 w-full flex-1 self-stretch overflow-hidden lg:block">
-            <div className="grid h-full w-full grid-cols-2 gap-3 sm:gap-4">
-              {[
-                {
-                  items: testimonials.filter((_, i) => i % 2 === 0),
-                  direction: "up" as const,
-                },
-                {
-                  items: testimonials.filter((_, i) => i % 2 === 1),
-                  direction: "down" as const,
-                },
-              ].map((column) => {
-                const loop = reduceMotion
-                  ? column.items
-                  : [...column.items, ...column.items];
-                return (
-                  <div
-                    key={column.direction}
-                    className={
-                      reduceMotion
-                        ? "relative h-full min-h-0 overflow-y-auto scrollbar-hidden"
-                        : "relative h-full min-h-0 overflow-hidden"
-                    }
-                  >
-                    <div
-                      className={`flex flex-col gap-3 sm:gap-4 ${
-                        reduceMotion
-                          ? ""
-                          : column.direction === "up"
-                            ? "testimonials-marquee-up"
-                            : "testimonials-marquee-down"
-                      }`}
-                    >
-                      {loop.map((t, i) => {
-                        const isClone =
-                          !reduceMotion && i >= column.items.length;
-                        return (
-                          <TestimonialCard
-                            key={`${column.direction}-${t.id}-${i}`}
-                            t={t}
-                            isClone={isClone}
-                            isPlaying={
-                              Boolean(t.video) &&
-                              playingCardId === t.id &&
-                              !isClone
-                            }
-                            onPlay={() => setPlayingCardId(t.id)}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+            <h3 className="font-['Playfair_Display',serif] text-2xl font-semibold text-foreground">
+              Comparte tu experiencia
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Las reseñas de Google son la forma más transparente de contar
+              cómo fue tu atención. Si ya terminaste tu tratamiento o tu
+              valoración, déjanos tu opinión y ayuda a más pacientes a
+              encontrarnos.
+            </p>
+            <a
+              href={siteInfo.googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold mt-6 inline-flex items-center gap-3 rounded-full py-1.5 pl-5 pr-1.5 text-sm font-semibold"
+            >
+              Escribir reseña en Google
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-dark/15">
+                <ArrowUpRight size={16} strokeWidth={2.25} />
+              </span>
+            </a>
+          </motion.article>
         </div>
       </section>
 
@@ -1300,7 +912,7 @@ export default function App() {
                 transition={transition}
                 className={`${SECTION_BADGE_CLASS} mb-6`}
               >
-                VISÍTANOS
+                Visítanos
               </motion.span>
               <motion.h2
                 variants={fadeUp}
@@ -1373,13 +985,13 @@ export default function App() {
               href={siteInfo.googleReviewUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 rounded-full bg-primary py-1.5 pl-5 pr-1.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/15 transition-opacity hover:opacity-90"
+              className="btn-gold inline-flex items-center gap-3 rounded-full py-1.5 pl-5 pr-1.5 text-sm font-semibold"
             >
               <span className="inline-flex items-center gap-2">
                 <Star size={16} fill="currentColor" strokeWidth={0} />
                 Déjanos tu reseña
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-dark/15">
                 <ArrowUpRight size={16} strokeWidth={2.25} />
               </span>
             </motion.a>
@@ -1389,12 +1001,12 @@ export default function App() {
 
       {/* FAQ SECTION */}
       <section
-        id="contacto"
-        className="py-20 lg:py-28 overflow-hidden bg-muted"
+        id="preguntas-frecuentes"
+        className="overflow-hidden bg-muted py-20 lg:py-28"
       >
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10">
+        <div className="mx-auto max-w-[1320px] px-6 lg:px-10">
           <motion.div
-            className="flex flex-col items-center mb-12 text-center"
+            className="mb-12 flex flex-col items-center text-center"
             initial="hidden"
             whileInView="visible"
             viewport={viewport}
@@ -1405,121 +1017,84 @@ export default function App() {
               transition={transition}
               className={`${SECTION_BADGE_CLASS} mb-6`}
             >
-              CLÍNICA BOUTIQUE
+              Preguntas frecuentes
             </motion.span>
             <motion.h2
               variants={fadeUp}
               transition={transition}
-              className="font-['Playfair_Display',serif] font-semibold text-4xl lg:text-5xl text-foreground"
+              className="font-['Playfair_Display',serif] text-4xl font-semibold text-foreground lg:text-5xl"
             >
-              Preguntas Frecuentes
+              Resolvemos tus dudas
             </motion.h2>
           </motion.div>
 
           <motion.div
-            className="max-w-[900px] mx-auto flex flex-col gap-3 mb-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            variants={stagger}
-          >
-            {faqs.map((faq, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                transition={transition}
-                className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
-              >
-                <button
-                  className="w-full flex items-center justify-between px-8 py-5 text-left gap-4"
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                >
-                  <span className="font-['Playfair_Display',serif] font-bold text-base text-foreground">
-                    {i + 1}. {faq.question}
-                  </span>
-                  <motion.span
-                    animate={{ rotate: openFaq === i ? 180 : 0 }}
-                    transition={{ duration: reduceMotion ? 0 : 0.25 }}
-                    className="shrink-0 text-primary"
-                  >
-                    <ChevronDown size={18} />
-                  </motion.span>
-                </button>
-                <AnimatePresence initial={false}>
-                  {openFaq === i && (
-                    <motion.div
-                      key="content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{
-                        duration: reduceMotion ? 0 : 0.3,
-                        ease: easeOut,
-                      }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-8 pb-6">
-                        <div className="w-full h-px bg-muted mb-5" />
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                          {faq.answer}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div
-            className="text-center"
+            className="mx-auto mb-10 max-w-[900px]"
             initial="hidden"
             whileInView="visible"
             viewport={viewport}
             variants={fadeIn}
             transition={transition}
           >
-            <p className="text-muted-foreground text-lg">
-              ¿Tienes otra pregunta?
-            </p>
-            <a
-              href={siteInfo.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 font-['Playfair_Display',serif] font-semibold text-xl mt-1 text-primary"
-            >
-              C<span className="underline underline-offset-4">ontactanos</span>{" "}
-              →
-            </a>
+            <FaqList
+              items={homeFaqs}
+              openIndex={openFaq}
+              onToggle={(index) =>
+                setOpenFaq(openFaq === index ? null : index)
+              }
+            />
           </motion.div>
-        </div>
-      </section>
 
-      {/* FOOTER */}
-      <footer className="bg-background border-t border-border pt-16 pb-10">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-            <div className="md:col-span-1">
-              <p className="font-['Playfair_Display',serif] font-semibold text-2xl text-primary">
-                {siteInfo.shortName}
-              </p>
-              <p className="text-muted-foreground text-sm mt-2">
-                {siteInfo.slogan}
-              </p>
-              <p className="text-muted-foreground text-sm mt-3">
-                {siteInfo.address}
-              </p>
-              <p className="text-muted-foreground text-sm">
-                Tel: {siteInfo.phone}
-              </p>
-            </div>
-
-            <div className="md:col-span-3 flex flex-wrap gap-6 md:justify-end items-start">
+          <motion.div
+            className="flex flex-col items-center gap-3 text-center"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={fadeIn}
+            transition={transition}
+          >
+            <Link
+              to="/preguntas-frecuentes"
+              className="btn-gold inline-flex items-center gap-3 rounded-full py-1.5 pl-5 pr-1.5 text-sm font-semibold"
+            >
+              Ver todas las preguntas
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-dark/15">
+                <ArrowUpRight size={16} strokeWidth={2.25} />
+              </span>
+            </Link>
+            <p className="text-muted-foreground">
+              ¿Tienes otra pregunta?{" "}
               <a
                 href={siteInfo.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground text-sm hover:text-primary transition-colors duration-150"
+                className="font-semibold text-primary underline underline-offset-4"
+              >
+                Contáctanos
+              </a>
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <footer className="bg-brand-dark pt-16 pb-10 text-white">
+        <div className="mx-auto max-w-[1320px] px-6 lg:px-10">
+          <div className="mb-10 grid grid-cols-1 gap-8 md:grid-cols-4">
+            <div className="md:col-span-1">
+              <p className="font-['Playfair_Display',serif] text-2xl font-semibold text-white">
+                Dr. Jaime Pinzón
+              </p>
+              <p className="mt-2 text-sm text-white/65">{siteInfo.slogan}</p>
+              <p className="mt-3 text-sm text-white/65">{siteInfo.address}</p>
+              <p className="text-sm text-white/65">Tel: {siteInfo.phone}</p>
+            </div>
+
+            <div className="flex flex-wrap items-start gap-6 md:col-span-3 md:justify-end">
+              <a
+                href={siteInfo.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
               >
                 WhatsApp
               </a>
@@ -1527,25 +1102,31 @@ export default function App() {
                 href={siteInfo.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground text-sm hover:text-primary transition-colors duration-150"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
               >
                 Instagram
               </a>
               <a
                 href="#servicios"
-                className="text-muted-foreground text-sm hover:text-primary transition-colors duration-150"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
               >
                 Servicios
               </a>
               <a
                 href="#nosotros"
-                className="text-muted-foreground text-sm hover:text-primary transition-colors duration-150"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
               >
                 Sobre nosotros
               </a>
+              <Link
+                to="/preguntas-frecuentes"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
+              >
+                Preguntas frecuentes
+              </Link>
               <a
                 href="#ubicación"
-                className="text-muted-foreground text-sm hover:text-primary transition-colors duration-150"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
               >
                 Ubicación
               </a>
@@ -1553,21 +1134,22 @@ export default function App() {
                 href={siteInfo.googleReviewUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground text-sm hover:text-primary transition-colors duration-150"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
               >
                 Déjanos tu reseña
               </a>
             </div>
           </div>
 
-          <div className="border-t border-border pt-6 text-center">
-            <p className="text-muted-foreground text-sm">
+          <div className="border-t border-white/10 pt-6 text-center">
+            <p className="text-sm text-white/50">
               © {new Date().getFullYear()} {siteInfo.name}. Todos los derechos
               reservados.
             </p>
           </div>
         </div>
       </footer>
+      <WhatsAppFloat />
     </div>
   );
 }

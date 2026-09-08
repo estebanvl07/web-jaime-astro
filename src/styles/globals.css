@@ -49,6 +49,27 @@ body {
   font-family: var(--font-sans);
 }
 
+.btn-gold {
+  background: linear-gradient(165deg, #e8d5a3 0%, #c4a056 46%, #9a7a38 100%);
+  color: #1c1914;
+  box-shadow: 0 10px 28px -8px rgba(154, 122, 56, 0.42);
+}
+
+.btn-gold:hover {
+  filter: brightness(1.05);
+}
+
+.btn-gold:focus-visible {
+  outline: 2px solid #c4a056;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-gold {
+    box-shadow: none;
+  }
+}
+
 h1,
 h2,
 h3,

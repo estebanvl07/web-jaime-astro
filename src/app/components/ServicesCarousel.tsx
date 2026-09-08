@@ -1,24 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
-import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper";
-import { EffectCoverflow } from "swiper/modules";
-import {
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
-  LayoutGrid,
-  GalleryHorizontal,
-} from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { ServiceImage } from "@/app/components/ServiceImage";
 import { LazyImage } from "@/app/components/LazyImage";
-import { ImageSkeleton } from "@/app/components/ImageSkeleton";
-import { usePreloadImages } from "@/app/hooks/usePreloadImage";
 import { useServiceViewTransition } from "@/app/hooks/useServiceViewTransition";
 import { activateServiceViewTransition } from "@/app/lib/viewTransitions";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
+
+const INITIAL_VISIBLE = 8;
 
 export type ServiceCardItem = {
   title: string;
@@ -27,8 +15,6 @@ export type ServiceCardItem = {
   overlayImage?: string;
   slug: string;
 };
-
-type ServicesViewMode = "carousel" | "grid";
 
 type ServicesCarouselProps = {
   services: ServiceCardItem[];
@@ -98,199 +84,75 @@ export function ServicesCarousel({
   services,
   className = "",
 }: ServicesCarouselProps) {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [viewMode, setViewMode] = useState<ServicesViewMode>("carousel");
-  const [swiper, setSwiper] = useState<SwiperType | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isBeginning, setIsBeginning] = useState(true);
-  const [isEnd, setIsEnd] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [inView, setInView] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const [showAll, setShowAll] = useState(false);
+  const hiddenCount = Math.max(0, services.length - INITIAL_VISIBLE);
+  const visibleServices = showAll
+    ? services
+    : services.slice(0, INITIAL_VISIBLE);
 
-  const serviceImages = useMemo(
-    () =>
-      services.flatMap((service) =>
-        service.overlayImage
-          ? [service.image, service.overlayImage]
-          : [service.image],
-      ),
-    [services],
-  );
-  const preloadStatus = usePreloadImages(serviceImages, true);
-  const imagesReady =
-    preloadStatus === "loaded" || preloadStatus === "error";
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    const sync = () => setIsMobile(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "240px", threshold: 0.05 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  const syncEdges = (instance: SwiperType) => {
-    setIsBeginning(instance.isBeginning);
-    setIsEnd(instance.isEnd);
-    setActiveIndex(instance.activeIndex);
+  const toggleShowAll = () => {
+    const next = !showAll;
+    setShowAll(next);
+    if (!next) {
+      document.getElementById("servicios")?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+        block: "start",
+      });
+    }
   };
 
-  const useCoverflow = !isMobile && !reduceMotion;
-  const showCarousel = inView && imagesReady;
-
-  const isPrioritySlide = (index: number) =>
-    Math.abs(index - activeIndex) <= 1;
-
   return (
-    <div ref={rootRef} className={`w-full ${className}`}>
-      <div className="mb-6 flex justify-center px-6 lg:px-10">
-        <div
-          role="group"
-          aria-label="Modo de vista de servicios"
-          className="inline-flex items-center rounded-full border border-primary/20 bg-card p-1 shadow-sm"
-        >
-          <button
-            type="button"
-            aria-label="Vista carrusel"
-            aria-pressed={viewMode === "carousel"}
-            onClick={() => setViewMode("carousel")}
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
-              viewMode === "carousel"
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-primary"
-            }`}
+    <div className={`w-full ${className}`}>
+      <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-5 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-10 xl:grid-cols-4">
+        {visibleServices.map((service, index) => (
+          <div
+            key={service.slug}
+            className="aspect-[3/4] overflow-hidden rounded-2xl"
           >
-            <GalleryHorizontal size={18} strokeWidth={2.25} />
-          </button>
-          <button
-            type="button"
-            aria-label="Vista cuadrícula"
-            aria-pressed={viewMode === "grid"}
-            onClick={() => setViewMode("grid")}
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
-              viewMode === "grid"
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-primary"
-            }`}
-          >
-            <LayoutGrid size={18} strokeWidth={2.25} />
-          </button>
-        </div>
+            <ServiceCard service={service} priority={index < 4} />
+          </div>
+        ))}
       </div>
 
-      <AnimatePresence mode="wait" initial={false}>
-        {viewMode === "carousel" ? (
-          <motion.div
-            key="carousel"
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-            transition={{ duration: reduceMotion ? 0 : 0.28 }}
-            className="services-carousel w-full"
+      {hiddenCount > 0 ? (
+        <div className="mt-10 flex flex-col items-center gap-2 px-6">
+          <button
+            type="button"
+            aria-expanded={showAll}
+            onClick={toggleShowAll}
+            className="inline-flex items-center gap-3 rounded-full border border-foreground/15 bg-card py-1.5 pl-5 pr-1.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand"
           >
-            {!showCarousel ? (
-              <ImageSkeleton className="h-[420px] sm:h-[400px] lg:h-[440px]" />
-            ) : (
-              <Swiper
-                key={useCoverflow ? "coverflow" : "slide"}
-                modules={useCoverflow ? [EffectCoverflow] : []}
-                effect={useCoverflow ? "coverflow" : "slide"}
-                onSwiper={(instance) => {
-                  setSwiper(instance);
-                  syncEdges(instance);
-                }}
-                onSlideChange={syncEdges}
-                onReachBeginning={syncEdges}
-                onReachEnd={syncEdges}
-                grabCursor
-                centeredSlides
-                slidesPerView="auto"
-                spaceBetween={isMobile ? 12 : 16}
-                speed={isMobile ? 400 : 700}
-                preventClicks={false}
-                preventClicksPropagation={false}
-                slideToClickedSlide
-                watchSlidesProgress={useCoverflow}
-                coverflowEffect={
-                  useCoverflow
-                    ? {
-                        rotate: 22,
-                        stretch: 0,
-                        depth: 16,
-                        modifier: 1,
-                        scale: 1,
-                        slideShadows: false,
-                      }
-                    : undefined
-                }
-                className="w-full !overflow-visible !py-6 sm:!py-8"
-              >
-                {services.map((service, index) => (
-                  <SwiperSlide
-                    key={`${service.slug}-${index}`}
-                    className="services-carousel-slide !h-[420px] !w-[min(88vw,320px)] !overflow-hidden !rounded-2xl !bg-transparent sm:!h-[400px] sm:!w-[280px] lg:!h-[440px] lg:!w-[320px]"
-                  >
-                    <ServiceCard
-                      service={service}
-                      priority={isPrioritySlide(index)}
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            )}
-
-            <div className="mt-4 flex items-center justify-center gap-3">
-              <button
-                type="button"
-                aria-label="Anterior"
-                disabled={isBeginning}
-                onClick={() => swiper?.slidePrev()}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/25 bg-card text-primary transition-colors hover:bg-primary hover:text-primary-foreground disabled:pointer-events-none disabled:opacity-35"
-              >
-                <ChevronLeft size={22} strokeWidth={2.25} />
-              </button>
-              <button
-                type="button"
-                aria-label="Siguiente"
-                disabled={isEnd}
-                onClick={() => swiper?.slideNext()}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/25 bg-card text-primary transition-colors hover:bg-primary hover:text-primary-foreground disabled:pointer-events-none disabled:opacity-35"
-              >
-                <ChevronRight size={22} strokeWidth={2.25} />
-              </button>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="grid"
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-            transition={{ duration: reduceMotion ? 0 : 0.28 }}
-            className="mx-auto grid max-w-[1320px] grid-cols-1 gap-5 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-10 xl:grid-cols-4"
-          >
-            {services.map((service, index) => (
-              <div
-                key={service.slug}
-                className="aspect-[3/4] overflow-hidden rounded-2xl"
-              >
-                <ServiceCard service={service} priority={index < 4} />
-              </div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {showAll ? "Mostrar menos" : "Mostrar todos"}
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-dark text-white">
+              <ChevronDown
+                size={16}
+                strokeWidth={2.25}
+                className={`transition-transform ${showAll ? "rotate-180" : ""}`}
+              />
+            </span>
+          </button>
+          <p className="text-sm text-muted-foreground">
+            {showAll
+              ? `${services.length} tratamientos`
+              : `${hiddenCount} tratamientos más`}
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }
+
+/*
+ * Swiper + toggle carrusel/cuadrícula (comentado a petición).
+ * Restaurar imports: swiper, EffectCoverflow, lucide (ChevronLeft/Right,
+ * LayoutGrid, GalleryHorizontal), framer-motion, ImageSkeleton, usePreloadImages.
+ *
+export function ServicesCarouselSwiper({ services, className = "" }: ServicesCarouselProps) {
+  const [viewMode, setViewMode] = useState<"carousel" | "grid">("carousel");
+  // toggle GalleryHorizontal / LayoutGrid
+  // Swiper effect="coverflow" con ServiceCard por slide
+  // flechas anterior / siguiente
+}
+*/

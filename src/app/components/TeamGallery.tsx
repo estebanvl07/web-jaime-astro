@@ -2,15 +2,9 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Instagram, Linkedin } from "lucide-react";
 import { LazyImage } from "@/app/components/LazyImage";
+import type { TeamMember } from "@/app/data/team";
 
-export type TeamMember = {
-  name: string;
-  specialty: string;
-  bio: string;
-  img: string;
-  linkedin?: string;
-  instagram?: string;
-};
+export type { TeamMember };
 
 type TeamGalleryProps = {
   members: TeamMember[];
@@ -47,30 +41,32 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
               {active.specialty}
             </p>
 
-            <div className="mt-5 flex items-center gap-3">
-              {active.linkedin && (
-                <a
-                  href={active.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-foreground/80 transition-colors hover:text-primary"
-                  aria-label={`LinkedIn de ${active.name}`}
-                >
-                  <Linkedin size={18} strokeWidth={1.75} />
-                </a>
-              )}
-              {active.instagram && (
-                <a
-                  href={active.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-foreground/80 transition-colors hover:text-primary"
-                  aria-label={`Instagram de ${active.name}`}
-                >
-                  <Instagram size={18} strokeWidth={1.75} />
-                </a>
-              )}
-            </div>
+            {(active.linkedin || active.instagram) && (
+              <div className="mt-5 flex items-center gap-3">
+                {active.linkedin && (
+                  <a
+                    href={active.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground/80 transition-colors hover:text-primary"
+                    aria-label={`LinkedIn de ${active.name}`}
+                  >
+                    <Linkedin size={18} strokeWidth={1.75} />
+                  </a>
+                )}
+                {active.instagram && (
+                  <a
+                    href={active.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground/80 transition-colors hover:text-primary"
+                    aria-label={`Instagram de ${active.name}`}
+                  >
+                    <Instagram size={18} strokeWidth={1.75} />
+                  </a>
+                )}
+              </div>
+            )}
 
             <p className="mt-6 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
               {active.bio}

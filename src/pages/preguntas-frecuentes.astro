@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AppRoot from "../app/AppRoot";
+
+const title = "Preguntas frecuentes";
+const description =
+  "Resuelve dudas sobre citas, ortodoncia, periodoncia, prótesis e implantes en Dr. Jaime Pinzón Odontología Especializada, Barranquilla.";
+const path = "/preguntas-frecuentes";
+---
+
+<BaseLayout title={title} description={description} path={path}>
+  <div id="app-root">
+    <AppRoot client:only="react">
+      <div
+        slot="fallback"
+        class="flex min-h-dvh items-center justify-center bg-background text-muted-foreground"
+      >
+        Cargando…
+      </div>
+    </AppRoot>
+  </div>
+</BaseLayout>
