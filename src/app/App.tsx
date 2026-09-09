@@ -8,6 +8,8 @@ import svgPaths from "@/imports/svg-lnp12anmc4";
 import { ImageCardsSwiper } from "@/app/components/ImageCardsSwiper";
 import { ServicesCarousel } from "@/app/components/ServicesCarousel";
 import { TeamGallery } from "@/app/components/TeamGallery";
+import { BeforeAfterCompare } from "@/app/components/BeforeAfterCompare";
+import { sectionBadgeClass } from "@/app/components/SectionBadge";
 import { FaqList } from "@/app/components/FaqList";
 import { LazyMount } from "@/app/components/LazyMount";
 import { SiteHeader } from "@/app/components/SiteHeader";
@@ -66,7 +68,7 @@ const services = servicesData.map((service) => {
   };
 });
 
-const SECTION_BADGE_CLASS = "text-sm font-medium text-brand";
+const SECTION_BADGE_CLASS = sectionBadgeClass;
 
 const heroBadgePhrases = [
   "Odontología especializada",
@@ -564,7 +566,7 @@ export default function App() {
             <motion.h2
               variants={fadeUp}
               transition={transition}
-              className="mb-4 font-['Playfair_Display',serif] text-3xl font-semibold text-foreground lg:text-4xl"
+              className="mb-4 font-['Playfair_Display',serif] text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-[52px]"
             >
               Más que cuidar tu sonrisa, cuidamos de ti
             </motion.h2>
@@ -639,18 +641,24 @@ export default function App() {
           </motion.div>
 
           <motion.div
-            className="w-full flex-1 py-2 lg:min-w-0 lg:basis-[48%] lg:py-6"
+            className="w-full min-w-0 flex-1 overflow-hidden py-2 lg:min-w-0 lg:basis-[48%] lg:py-6"
             initial={{ opacity: 0, x: 36 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={viewport}
             transition={{ ...transition, duration: reduceMotion ? 0 : 0.75 }}
           >
             <LazyMount className="w-full" minHeight={480}>
-              <ImageCardsSwiper
-                imageSrc={imgClinica}
-                alt="Nuestra Clínica — Dr. Jaime Pinzon"
-                className="w-full"
-              />
+              <div className="flex flex-col gap-3">
+                <BeforeAfterCompare
+                  beforeSrc="/images/casos/antes-tratamiento.png"
+                  afterSrc="/images/casos/despues-tratamiento.png"
+                  beforeAlt="Sonrisa antes del tratamiento odontológico"
+                  afterAlt="Sonrisa después del tratamiento odontológico"
+                />
+                <p className="text-center text-sm text-muted-foreground">
+                  Arrastra el control para comparar el antes y el después
+                </p>
+              </div>
             </LazyMount>
           </motion.div>
         </div>
@@ -692,7 +700,7 @@ export default function App() {
             <motion.h2
               variants={fadeUp}
               transition={transition}
-              className="font-['Playfair_Display',serif] font-semibold text-3xl lg:text-4xl text-foreground mb-4"
+              className="mb-4 font-['Playfair_Display',serif] text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-[52px]"
             >
               Un equipo en el que puedes confiar
             </motion.h2>
@@ -750,12 +758,13 @@ export default function App() {
             viewport={viewport}
             variants={stagger}
           >
-            {/* <motion.div
+            <motion.span
               variants={fadeUp}
               transition={transition}
-              className="mb-5 h-0.5 w-10 bg-primary"
-              aria-hidden
-            /> */}
+              className={`${SECTION_BADGE_CLASS} mb-6`}
+            >
+              Equipo
+            </motion.span>
             <motion.h2
               variants={fadeUp}
               transition={transition}

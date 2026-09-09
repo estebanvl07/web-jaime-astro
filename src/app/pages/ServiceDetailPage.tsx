@@ -3,10 +3,11 @@ import { Link, useParams, Navigate } from "react-router";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Check, Calendar } from "lucide-react";
 import { ServiceImage } from "@/app/components/ServiceImage";
+import { ServiceLogoMark } from "@/app/components/ServiceLogoMark";
 import { SiteHeader } from "@/app/components/SiteHeader";
 import { WhatsAppFloat } from "@/app/components/WhatsAppFloat";
 import { getServiceBySlug, services } from "@/app/data/services";
-import { getServiceImage } from "@/app/data/serviceImages";
+import { getServiceImage, isEmptyServiceImage } from "@/app/data/serviceImages";
 import { siteInfo } from "@/app/data/site";
 import {
   Seo,
@@ -18,6 +19,7 @@ import {
   serviceImageTransitionName,
   serviceTitleTransitionName,
 } from "@/app/lib/viewTransitions";
+import { sectionBadgeClass } from "@/app/components/SectionBadge";
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -75,6 +77,7 @@ export default function ServiceDetailPage() {
 
   const { image: serviceImage, overlayImage: serviceOverlayImage } =
     getServiceImage(service.slug);
+  const isEmptyImage = isEmptyServiceImage(serviceImage);
 
   return (
     <div className="min-h-screen bg-background font-['Inter',sans-serif] text-foreground">
@@ -110,7 +113,7 @@ export default function ServiceDetailPage() {
             <motion.span
               variants={fadeUp}
               transition={transition}
-              className="text-sm font-medium text-brand"
+              className={sectionBadgeClass}
             >
               {service.category}
             </motion.span>
@@ -159,21 +162,30 @@ export default function ServiceDetailPage() {
             </motion.div>
           </motion.div>
 
-          <div className="relative overflow-hidden rounded-[28px]">
-            <ServiceImage
-              src={serviceImage}
-              overlaySrc={serviceOverlayImage}
-              alt={service.title}
-              width={1280}
-              height={853}
-              priority
-              style={{
-                viewTransitionName: serviceImageTransitionName(service.slug),
-              }}
-              className="w-full"
-              imageClassName="service-vt-image aspect-[4/3] w-full object-cover object-top lg:aspect-[5/4]"
-              overlayClassName="h-24 w-24 sm:h-28 sm:w-28 lg:h-36 lg:w-36"
-            />
+          <div className="relative overflow-hidden rounded-[28px] bg-secondary">
+            {isEmptyImage ? (
+              <ServiceLogoMark
+                className="aspect-4/3 w-full lg:aspect-5/4"
+                style={{
+                  viewTransitionName: serviceImageTransitionName(service.slug),
+                }}
+              />
+            ) : (
+              <ServiceImage
+                src={serviceImage}
+                overlaySrc={serviceOverlayImage}
+                alt={service.title}
+                width={1280}
+                height={853}
+                priority
+                style={{
+                  viewTransitionName: serviceImageTransitionName(service.slug),
+                }}
+                className="w-full"
+                imageClassName="service-vt-image aspect-4/3 w-full object-cover object-top lg:aspect-5/4"
+                overlayClassName="h-24 w-24 sm:h-28 sm:w-28 lg:h-36 lg:w-36"
+              />
+            )}
           </div>
         </div>
       </section>

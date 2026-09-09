@@ -10,6 +10,7 @@ const easeOut = [0.22, 1, 0.36, 1] as const;
 
 export const homeNavLinks = [
   { label: "Servicios", href: "/#servicios" },
+  { label: "Nosotros", href: "/#nosotros" },
   { label: "Equipo", href: "/#equipo" },
   { label: "Testimonios", href: "/#testimonios" },
   { label: "Preguntas", href: "/#preguntas-frecuentes" },

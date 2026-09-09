@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { ServiceImage } from "@/app/components/ServiceImage";
+import { ServiceLogoMark } from "@/app/components/ServiceLogoMark";
 import { LazyImage } from "@/app/components/LazyImage";
 import { useServiceViewTransition } from "@/app/hooks/useServiceViewTransition";
 import { activateServiceViewTransition } from "@/app/lib/viewTransitions";
+import { isEmptyServiceImage } from "@/app/data/serviceImages";
 
 const INITIAL_VISIBLE = 8;
 
@@ -29,25 +31,39 @@ function ServiceCard({
   priority?: boolean;
 }) {
   const { to, imageName, titleName } = useServiceViewTransition(service.slug);
+  const isEmpty = isEmptyServiceImage(service.image);
 
   return (
     <Link
       to={to}
       viewTransition
       onClick={() => activateServiceViewTransition(service.slug)}
-      className="group relative block h-full w-full overflow-hidden rounded-2xl"
+      className="group relative block h-full w-full overflow-hidden rounded-2xl bg-secondary"
     >
-      <ServiceImage
-        src={service.image}
-        alt={service.title}
-        width={800}
-        height={533}
-        priority={priority}
-        className="absolute inset-0 h-full w-full"
-        style={{ viewTransitionName: imageName }}
-        imageClassName="service-vt-image absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      {isEmpty ? (
+        <ServiceLogoMark
+          className="absolute inset-0"
+          style={{ viewTransitionName: imageName }}
+        />
+      ) : (
+        <ServiceImage
+          src={service.image}
+          alt={service.title}
+          width={800}
+          height={533}
+          priority={priority}
+          className="absolute inset-0 h-full w-full"
+          style={{ viewTransitionName: imageName }}
+          imageClassName="service-vt-image absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      )}
+      <div
+        className={
+          isEmpty
+            ? "absolute inset-0 bg-gradient-to-t from-foreground/55 via-transparent to-transparent"
+            : "absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"
+        }
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
       <span className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/25 text-white backdrop-blur-sm transition-colors group-hover:bg-white/40">
         <ArrowUpRight size={16} strokeWidth={2.25} />

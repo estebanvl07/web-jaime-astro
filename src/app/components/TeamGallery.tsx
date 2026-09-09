@@ -22,10 +22,10 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
 
   return (
     <div
-      className={`flex flex-col gap-10 lg:flex-row lg:items-stretch lg:gap-12 xl:gap-16 ${className}`}
+      className={`flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-12 xl:gap-16 ${className}`}
     >
       {/* Detalle del miembro activo */}
-      <div className="flex w-full flex-col justify-start lg:w-[34%] lg:max-w-sm lg:shrink-0">
+      <div className="flex w-full flex-col justify-center lg:w-[34%] lg:max-w-sm lg:shrink-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={active.name}
@@ -92,6 +92,7 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
               aria-selected={isActive}
               aria-label={`Ver perfil de ${member.name}`}
               onClick={() => setActiveIndex(index)}
+              onMouseEnter={() => setActiveIndex(index)}
               layout={!reduceMotion}
               initial={false}
               animate={{

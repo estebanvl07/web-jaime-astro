@@ -1,10 +1,14 @@
-import imgHero from "@/imports/assets/a8f2c0383b88021a11b45557934c6aacc3594e91.avif?url";
-
 const ORTODONCIA_MAIN = "/images/services/ortodoncia.png";
 const ORTODONCIA_OVERLAY = "/images/services/alineadores_transparentes.png";
 
 const AUTOLIGADO_MAIN = "/images/services/autoligado.jpg";
 const AUTOLIGADO_OVERLAY = "/images/services/autoligado_elem.jpeg";
+
+export const EMPTY_SERVICE = "/images/services/empty-logo.png";
+
+export function isEmptyServiceImage(src: string) {
+  return src === EMPTY_SERVICE;
+}
 
 const ORTODONCIA_SLUGS = new Set([
   "alineadores-dentales",
@@ -32,5 +36,5 @@ export function getServiceImage(slug: string): ServiceImageConfig {
     };
   }
 
-  return { image: imgHero };
+  return { image: EMPTY_SERVICE };
 }

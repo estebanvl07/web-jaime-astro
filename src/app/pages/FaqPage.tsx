@@ -6,6 +6,7 @@ import { WhatsAppFloat } from "@/app/components/WhatsAppFloat";
 import { faqGroups, faqs } from "@/app/data/faqs";
 import { siteInfo } from "@/app/data/site";
 import { Seo, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/app/seo/Seo";
+import { sectionBadgeClass } from "@/app/components/SectionBadge";
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -80,7 +81,7 @@ export default function FaqPage() {
             <motion.span
               variants={fadeUp}
               transition={transition}
-              className="text-sm font-medium text-brand"
+              className={sectionBadgeClass}
             >
               Preguntas frecuentes
             </motion.span>
