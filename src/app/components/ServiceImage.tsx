@@ -48,6 +48,7 @@ export function ServiceImage({
           <LazyImage
             src={overlaySrc}
             alt={overlayAlt}
+            priority={priority}
             className="h-full w-full object-cover object-center"
           />
         </div>

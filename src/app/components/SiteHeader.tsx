@@ -29,20 +29,36 @@ type SiteHeaderProps = {
   backLink?: BackLink;
 };
 
-function BrandLockup({ href = "/" }: { href?: string }) {
+function BrandLockup({
+  href = "/",
+  inverted = false,
+}: {
+  href?: string;
+  inverted?: boolean;
+}) {
   const content = (
     <>
       <LazyImage
         src={imgLogo}
         alt=""
         priority
-        className="h-9 w-auto object-contain sm:h-10"
+        className={`h-9 w-auto object-contain sm:h-10 ${
+          inverted ? "brightness-0 invert" : ""
+        }`}
       />
       <span className="min-w-0 leading-tight">
-        <span className="block truncate font-['Playfair_Display',serif] text-[17px] font-semibold tracking-tight text-foreground sm:text-xl">
+        <span
+          className={`block truncate font-['Playfair_Display',serif] text-[17px] font-semibold tracking-tight sm:text-xl ${
+            inverted ? "text-[#fffcf8]" : "text-foreground"
+          }`}
+        >
           Dr. Jaime Pinzón
         </span>
-        <span className="hidden text-[11px] text-muted-foreground sm:block">
+        <span
+          className={`hidden text-[11px] sm:block ${
+            inverted ? "text-white/65" : "text-muted-foreground"
+          }`}
+        >
           Odontología especializada
         </span>
       </span>
@@ -51,7 +67,10 @@ function BrandLockup({ href = "/" }: { href?: string }) {
 
   if (href.startsWith("/#") || href === "/") {
     return (
-      <a href={href === "/" ? "#" : href} className="flex min-w-0 items-center gap-2.5">
+      <a
+        href={href === "/" ? "#" : href}
+        className="flex min-w-0 items-center gap-2.5"
+      >
         {content}
       </a>
     );
@@ -68,6 +87,8 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const reduceMotion = useReducedMotion();
+
+  const solid = variant === "inner" || scrolled || menuOpen;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -90,7 +111,11 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
       <div className="bg-brand-dark text-[11px] text-white/75 sm:text-xs">
         <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-12">
           <p className="flex min-w-0 items-center gap-1.5">
-            <MapPin size={12} className="shrink-0 text-brand" aria-hidden />
+            <MapPin
+              size={12}
+              className="shrink-0 text-brand-soft"
+              aria-hidden
+            />
             <span className="truncate">
               {siteInfo.neighborhood}, {siteInfo.city}
             </span>
@@ -99,21 +124,24 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
             href={`tel:${siteInfo.phoneE164}`}
             className="inline-flex shrink-0 items-center gap-1.5 text-white/90 transition-colors hover:text-white"
           >
-            <Phone size={12} className="text-brand" aria-hidden />
+            <Phone size={12} className="text-brand-soft" aria-hidden />
             {siteInfo.phone}
           </a>
         </div>
       </div>
 
       <div
-        className={`border-b bg-background/95 backdrop-blur-md transition-[box-shadow,border-color] ${
-          scrolled
-            ? "border-border shadow-[var(--header-shadow)]"
-            : "border-border/70"
+        className={`border-b transition-[background-color,border-color,box-shadow] duration-300 ${
+          solid
+            ? "border-border bg-white shadow-[var(--header-shadow)]"
+            : "border-transparent bg-transparent"
         }`}
       >
         <div className="relative mx-auto flex h-[68px] max-w-[1320px] items-center justify-between gap-3 px-4 sm:px-6 lg:h-[72px] lg:px-12">
-          <BrandLockup href={variant === "inner" ? "/" : "#"} />
+          <BrandLockup
+            href={variant === "inner" ? "/" : "#"}
+            inverted={!solid}
+          />
 
           {variant === "home" ? (
             <nav
@@ -124,7 +152,11 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
                 <a
                   key={link.href}
                   href={link.href.replace("/#", "#")}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  className={`text-sm transition-colors ${
+                    solid
+                      ? "text-muted-foreground hover:text-foreground"
+                      : "text-white/80 hover:text-white"
+                  }`}
                 >
                   {link.label}
                 </a>
@@ -158,7 +190,11 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
             {variant === "home" ? (
               <button
                 type="button"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-secondary lg:hidden"
+                className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors lg:hidden ${
+                  solid
+                    ? "text-foreground hover:bg-secondary"
+                    : "text-white hover:bg-white/10"
+                }`}
                 onClick={() => setMenuOpen((open) => !open)}
                 aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
                 aria-expanded={menuOpen}
@@ -178,7 +214,7 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
                   duration: reduceMotion ? 0 : 0.2,
                   ease: easeOut,
                 }}
-                className="absolute inset-x-3 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-xl lg:hidden"
+                className="absolute inset-x-3 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-border bg-white p-2 shadow-xl lg:hidden"
               >
                 {homeNavLinks.map((link) => (
                   <a

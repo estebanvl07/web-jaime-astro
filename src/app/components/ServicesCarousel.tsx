@@ -75,6 +75,7 @@ function ServiceCard({
             <LazyImage
               src={service.overlayImage}
               alt="Alineadores dentales"
+              priority
               className="h-full w-full object-cover object-center"
             />
           </div>
@@ -127,7 +128,10 @@ export function ServicesCarousel({
             key={service.slug}
             className="aspect-[3/4] overflow-hidden rounded-2xl"
           >
-            <ServiceCard service={service} priority={index < 4} />
+            <ServiceCard
+              service={service}
+              priority={index < INITIAL_VISIBLE}
+            />
           </div>
         ))}
       </div>

@@ -12,10 +12,16 @@ export function LazyImage({
   decoding = "async",
   ...props
 }: LazyImageProps) {
+  // En móvil, `loading="lazy"` dentro de contenedores que montan tarde
+  // (LazyMount / opacity:0) a menudo nunca dispara la descarga.
+  const resolvedLoading = loading ?? (priority ? "eager" : "lazy");
+  const resolvedFetchPriority =
+    fetchPriority ?? (priority ? "high" : resolvedLoading === "eager" ? "auto" : "low");
+
   return (
     <img
-      loading={loading ?? (priority ? "eager" : "lazy")}
-      fetchPriority={fetchPriority ?? (priority ? "high" : "low")}
+      loading={resolvedLoading}
+      fetchPriority={resolvedFetchPriority}
       decoding={decoding}
       {...props}
     />

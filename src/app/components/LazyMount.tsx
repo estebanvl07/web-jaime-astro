@@ -12,7 +12,7 @@ type LazyMountProps = {
 /** Monta children solo al acercarse al viewport (ahorra JS/GPU inicial en móvil). */
 export function LazyMount({
   children,
-  rootMargin = "200px",
+  rootMargin = "280px",
   className = "",
   minHeight,
 }: LazyMountProps) {
@@ -26,6 +26,15 @@ export function LazyMount({
       setReady(true);
       return;
     }
+
+    // Si ya está cerca al montar (p. ej. scroll a #servicios), montar ya.
+    const rect = el.getBoundingClientRect();
+    const margin = Number.parseInt(rootMargin, 10) || 0;
+    if (rect.top < window.innerHeight + margin) {
+      setReady(true);
+      return;
+    }
+
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

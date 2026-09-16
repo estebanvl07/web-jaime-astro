@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Star, Check, ArrowUpRight, MapPin, ExternalLink } from "lucide-react";
 import { Link } from "react-router";
-import imgHero from "@/imports/assets/a8f2c0383b88021a11b45557934c6aacc3594e91.avif?url";
 import imgClinica from "@/imports/assets/90ebfb78fbf8f207012f653657adadf619c96529.avif?url";
 import svgPaths from "@/imports/svg-lnp12anmc4";
 import { ImageCardsSwiper } from "@/app/components/ImageCardsSwiper";
@@ -26,6 +25,8 @@ import {
   buildFaqJsonLd,
 } from "@/app/seo/Seo";
 // import { ThemeToggle } from "@/app/components/ThemeToggle"; // dark mode desactivado
+
+const HERO_IMAGE = "/images/close-up-boy-dentist.avif";
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -201,165 +202,45 @@ export default function App() {
       <Seo path="/" jsonLd={homeJsonLd} />
       <SiteHeader />
 
-      {/* HERO + STATS */}
-      <section className="relative overflow-x-clip pt-[var(--header-offset)]">
+      {/* HERO */}
+      <section className="relative min-h-dvh overflow-hidden">
+        <img
+          src={HERO_IMAGE}
+          alt="Atención odontológica especializada en Barranquilla"
+          width={1920}
+          height={1080}
+          fetchpriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover object-[62%_center] sm:object-[68%_center]"
+        />
+
+        {/* Gradiente marca: ink + bronce para legibilidad sin apagar la foto */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background: "var(--page-hero)",
+            background: `
+              linear-gradient(
+                105deg,
+                rgba(20, 17, 14, 0.92) 0%,
+                rgba(20, 17, 14, 0.82) 34%,
+                rgba(20, 17, 14, 0.42) 58%,
+                rgba(20, 17, 14, 0.12) 78%,
+                rgba(20, 17, 14, 0.05) 100%
+              ),
+              linear-gradient(
+                to top,
+                rgba(20, 17, 14, 0.72) 0%,
+                rgba(196, 160, 86, 0.14) 28%,
+                transparent 55%
+              )
+            `,
           }}
         />
 
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 z-0 h-[280px] w-[140%] max-w-none -translate-x-1/2 rounded-full opacity-80 blur-[70px] sm:h-[340px] sm:blur-[90px] lg:h-[420px]"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 0%, rgba(232, 213, 163, 0.55) 0%, rgba(196, 160, 86, 0.18) 38%, transparent 70%)",
-          }}
-        />
-
-        {/* Spotlights estáticos (sin animación infinita: mejor TBT / battery) */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-16 top-0 h-[640px] w-[640px] rounded-full opacity-70 blur-[100px]"
-          style={{
-            background:
-              "radial-gradient(circle, var(--spotlight-primary) 0%, transparent 70%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute right-[18%] top-[28%] h-[280px] w-[280px] rounded-full opacity-55 blur-[70px]"
-          style={{
-            background:
-              "radial-gradient(circle, var(--spotlight-teal) 0%, transparent 70%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-24 bottom-[18%] h-[420px] w-[420px] rounded-full opacity-45 blur-[90px]"
-          style={{
-            background:
-              "radial-gradient(circle, var(--spotlight-mint) 0%, transparent 72%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-[32%] top-[12%] h-[180px] w-[180px] rounded-full opacity-40 blur-[50px]"
-          style={{
-            background:
-              "radial-gradient(circle, var(--spotlight-glow) 0%, transparent 75%)",
-          }}
-        />
-
-        <div className="relative z-[1] mx-auto flex min-h-[calc(100dvh-var(--header-offset))] w-full max-w-[1320px] flex-col px-6 pt-1 sm:px-8 lg:block lg:min-h-[500px] lg:px-12 lg:pt-14 xl:px-16 2xl:min-h-[750px] 2xl:px-12 2xl:pt-16">
-          {/* Foto médico — ~60% del viewport en mobile */}
+        <div className="relative z-[1] mx-auto flex min-h-dvh w-full max-w-[1320px] flex-col justify-end px-6 pb-10 pt-[calc(var(--header-offset)+1.5rem)] sm:px-8 sm:pb-12 lg:justify-center lg:px-12 lg:pb-16 xl:px-16 2xl:px-12">
           <motion.div
-            className="relative z-[2] order-1 mx-auto mb-3 h-[60dvh] min-h-[280px] w-full shrink-0 lg:absolute lg:bottom-0 lg:right-6 lg:order-none lg:mx-0 lg:mb-0 lg:mt-0 lg:h-auto lg:min-h-0 lg:w-[48%] lg:max-w-[520px] xl:right-8 xl:max-w-[560px] 2xl:right-4 2xl:w-[58%] 2xl:max-w-[700px]"
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{
-              ...transition,
-              delay: reduceMotion ? 0 : 0.15,
-              duration: reduceMotion ? 0 : 0.8,
-            }}
-          >
-            {/* JAIME — solo mobile, detrás de la imagen */}
-            <motion.div
-              aria-hidden
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                ...transition,
-                delay: reduceMotion ? 0 : 0.25,
-              }}
-              className="pointer-events-none absolute left-1/2 top-[4%] z-0 -translate-x-1/2 lg:top-[-2%]"
-            >
-              <h4
-                className="-mr-[0.28em] whitespace-nowrap font-['Playfair_Display',serif] text-[clamp(3.5rem,28vw,10rem)] font-black uppercase leading-none tracking-[0.22em]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, #c4a056 0%, #c4a056 22%, rgba(196,160,86,0) 100%)",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
-                }}
-              >
-                JAIME
-              </h4>
-            </motion.div>
-
-            <div className="fade-bottom relative z-[1] mx-auto h-full min-h-0 w-full overflow-hidden rounded-t-[28px] lg:min-h-0 lg:rounded-t-[32px]">
-              <img
-                src={imgHero}
-                alt="Dr. Jaime Pinzón — Odontología Especializada en Barranquilla"
-                width={1280}
-                height={853}
-                fetchpriority="high"
-                decoding="async"
-                className="mx-auto block h-full w-full object-cover object-[center_top] lg:h-[500px] 2xl:h-[760px]"
-              />
-            </div>
-
-            <motion.div
-              className="absolute bottom-28 right-2 z-[3] hidden items-center gap-3.5 rounded-2xl border border-white/60 bg-white/90 px-4 py-3.5 shadow-xl backdrop-blur-md dark:border-border/80 dark:bg-card/90 sm:right-6 sm:bottom-32 lg:flex"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                ...transition,
-                delay: reduceMotion ? 0 : 0.55,
-              }}
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-teal">
-                <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
-                  <path
-                    d={svgPaths.p3e30af00}
-                    fill="#fffcf8"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="font-['Playfair_Display',serif] text-lg font-semibold leading-tight text-foreground">
-                  {siteInfo.successfulTreatments}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Tratamientos exitosos
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute left-2 top-[28%] z-[3] hidden items-center gap-3.5 rounded-2xl border border-white/60 bg-white/90 px-4 py-3.5 shadow-xl backdrop-blur-md dark:border-border/80 dark:bg-card/90 sm:-left-4 lg:left-0 lg:flex"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                ...transition,
-                delay: reduceMotion ? 0 : 0.7,
-              }}
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-teal">
-                <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
-                  <path
-                    d={svgPaths.p3e30af00}
-                    fill="#fffcf8"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="font-['Playfair_Display',serif] text-lg font-semibold leading-tight text-foreground">
-                  Desde {siteInfo.sinceYear}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Años de experiencia
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            className="relative z-[2] order-2 flex max-w-xl flex-col justify-center gap-3 pb-8 sm:gap-4 lg:order-none lg:min-h-[500px] lg:gap-6 lg:pb-16 2xl:min-h-[750px] 2xl:pb-24"
+            className="flex max-w-xl flex-col gap-4 sm:gap-5 lg:gap-6"
             variants={stagger}
             initial="hidden"
             animate="visible"
@@ -369,7 +250,7 @@ export default function App() {
               transition={transition}
               className="inline-flex"
             >
-              <span className={`${SECTION_BADGE_CLASS} w-fit max-w-full`}>
+              <span className="inline-flex w-fit max-w-full items-center rounded-full border border-brand-soft/40 bg-brand-dark/40 px-3.5 py-1 text-xs font-medium tracking-wide text-brand-soft backdrop-blur-sm">
                 <RotatingTypewriter
                   phrases={heroBadgePhrases}
                   disabled={!!reduceMotion}
@@ -380,7 +261,7 @@ export default function App() {
             <motion.h1
               variants={fadeUp}
               transition={transition}
-              className="font-['Playfair_Display',serif] text-4xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-[54px] 2xl:text-[64px]"
+              className="font-['Playfair_Display',serif] text-4xl font-bold leading-[1.1] tracking-tight text-[#fffcf8] sm:text-5xl lg:text-[54px] 2xl:text-[64px]"
             >
               Cada sonrisa tiene
               <br />
@@ -390,7 +271,7 @@ export default function App() {
             <motion.p
               variants={fadeUp}
               transition={transition}
-              className="text-sm leading-relaxed text-muted-foreground sm:text-base lg:text-sm 2xl:text-lg"
+              className="max-w-md text-sm leading-relaxed text-white/72 sm:text-base lg:text-[15px] 2xl:text-lg"
             >
               {siteInfo.slogan}. Atención de alta calidad con experiencia,
               tecnología y un trato humano desde {siteInfo.sinceYear}.
@@ -399,7 +280,7 @@ export default function App() {
             <motion.div
               variants={fadeUp}
               transition={transition}
-              className="flex flex-col gap-3 pt-2 sm:flex-row"
+              className="flex flex-col gap-3 pt-1 sm:flex-row"
             >
               <motion.a
                 href={siteInfo.whatsappUrl}
@@ -416,39 +297,17 @@ export default function App() {
                 href="#servicios"
                 whileHover={reduceMotion ? undefined : { y: -2 }}
                 whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                className="flex items-center justify-center gap-2 rounded-full border border-foreground/15 px-8 py-4 text-sm font-semibold text-foreground"
+                className="flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/5 px-8 py-4 text-sm font-semibold text-[#fffcf8] backdrop-blur-sm transition-colors hover:bg-white/10"
               >
                 Ver tratamientos
               </motion.a>
             </motion.div>
-          </motion.div>
-        </div>
 
-        {/* Stats dentro del hero */}
-        <motion.div
-          className="relative z-[3] border-t border-primary/10 bg-page-soft"
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewport}
-          variants={stagger}
-        >
-          <div className="mx-auto flex max-w-[1320px] flex-col items-start gap-10 px-6 py-12 sm:px-8 lg:flex-row lg:items-center lg:gap-0 lg:px-12 xl:px-16 2xl:px-12">
             <motion.div
-              className="shrink-0 lg:w-[40%]"
               variants={fadeUp}
               transition={transition}
+              className="mt-4 flex max-w-md gap-0 border-t border-white/15 pt-6 sm:mt-6"
             >
-              <h2 className="font-['Playfair_Display',serif] text-2xl font-semibold lg:text-3xl text-primary">
-                Dr. Jaime Pinzón
-              </h2>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                Odontología especializada con
-                <br className="hidden sm:block" />
-                experiencia, tecnología y trato humano.
-              </p>
-            </motion.div>
-
-            <div className="grid flex-1 grid-cols-2 gap-4 border-border lg:border-l lg:pl-16">
               {[
                 {
                   value: `Desde ${siteInfo.sinceYear}`,
@@ -459,23 +318,25 @@ export default function App() {
                   label: "Tratamientos exitosos",
                 },
               ].map((stat, i) => (
-                <motion.div
-                  key={i}
-                  className={i > 0 ? "border-l border-border pl-4" : ""}
-                  variants={fadeUp}
-                  transition={transition}
+                <div
+                  key={stat.label}
+                  className={
+                    i > 0
+                      ? "flex-1 border-l border-white/15 pl-5 sm:pl-8"
+                      : "flex-1 pr-5 sm:pr-8"
+                  }
                 >
-                  <p className="text-center font-['Playfair_Display',serif] text-3xl font-bold lg:text-4xl text-primary">
+                  <p className="font-['Playfair_Display',serif] text-2xl font-bold text-brand-soft sm:text-3xl lg:text-[2rem]">
                     {stat.value}
                   </p>
-                  <p className="mt-1 text-center text-sm leading-snug text-muted-foreground">
+                  <p className="mt-1 text-xs leading-snug text-white/65 sm:text-sm">
                     {stat.label}
                   </p>
-                </motion.div>
+                </div>
               ))}
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
+          </motion.div>
+        </div>
       </section>
 
       {/* SERVICES SECTION */}
@@ -532,14 +393,12 @@ export default function App() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reduceMotion ? false : { y: 16 }}
+          whileInView={{ y: 0 }}
           viewport={viewport}
           transition={transition}
         >
-          <LazyMount minHeight={480}>
-            <ServicesCarousel services={services} />
-          </LazyMount>
+          <ServicesCarousel services={services} />
         </motion.div>
       </section>
 

@@ -346,11 +346,6 @@ h6 {
     height: 100%;
     overflow: clip;
   }
-
-  .service-vt-image,
-  .service-vt-title {
-    contain: layout;
-  }
 }
 
 @keyframes vt-fade-out {
