@@ -13,6 +13,7 @@ export function isEmptyServiceImage(src: string) {
 export type ServiceImageConfig = {
   image: string;
   overlayImage?: string;
+  overlayAlt?: string;
 };
 
 const SERVICE_IMAGES: Record<string, ServiceImageConfig> = {
@@ -25,7 +26,9 @@ const SERVICE_IMAGES: Record<string, ServiceImageConfig> = {
     overlayImage: AUTOLIGADO_OVERLAY,
   },
   "ortodoncia-convencional": {
-    image: "/images/services/ortodoncia-convencional.avif",
+    image: "/images/services/ortodocia-convecional-ceramica.avif",
+    overlayImage: "/images/services/ortodoncia-convencional.avif",
+    overlayAlt: "Brackets metálicos",
   },
   "ortopedia-maxilar": {
     image: "/images/services/ortopedia-maxilar.avif",

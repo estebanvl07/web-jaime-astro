@@ -6,25 +6,22 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import { LazyImage } from "@/app/components/LazyImage";
 import { ImageSkeleton } from "@/app/components/ImageSkeleton";
-import { usePreloadImage } from "@/app/hooks/usePreloadImage";
+import { usePreloadImages } from "@/app/hooks/usePreloadImage";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 
 type ImageCardsSwiperProps = {
-  imageSrc: string;
+  images: string[];
   alt: string;
   className?: string;
 };
-
-const SLIDE_COUNT = 4;
-const CENTER_SLIDE = Math.floor((SLIDE_COUNT - 1) / 2);
 
 /**
  * Mismo lenguaje visual que ServicesCarousel (coverflow + flechas).
  * Desktop: fade-x y ancho del content. Móvil: slide simple.
  */
 export function ImageCardsSwiper({
-  imageSrc,
+  images,
   alt,
   className = "",
 }: ImageCardsSwiperProps) {
@@ -33,7 +30,9 @@ export function ImageCardsSwiper({
   const [inView, setInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const reduceMotion = useReducedMotion();
-  const preloadStatus = usePreloadImage(imageSrc, true);
+  const slides = images.filter(Boolean);
+  const centerSlide = Math.max(0, Math.floor((slides.length - 1) / 2));
+  const preloadStatus = usePreloadImages(slides, slides.length > 0);
   const imageReady = preloadStatus === "loaded" || preloadStatus === "error";
 
   useEffect(() => {
@@ -85,7 +84,7 @@ export function ImageCardsSwiper({
             grabCursor
             centeredSlides
             slidesPerView="auto"
-            initialSlide={CENTER_SLIDE}
+            initialSlide={centerSlide}
             rewind
             spaceBetween={isMobile ? 12 : 16}
             speed={isMobile ? 400 : 700}
@@ -110,18 +109,18 @@ export function ImageCardsSwiper({
             }
             className="w-full !overflow-visible !py-6 sm:!py-8"
           >
-            {Array.from({ length: SLIDE_COUNT }).map((_, index) => (
+            {slides.map((src, index) => (
               <SwiperSlide
-                key={`${alt}-${index}`}
+                key={src}
                 className="!h-[420px] !w-[min(88vw,320px)] !overflow-hidden !rounded-2xl !bg-transparent sm:!h-[400px] sm:!w-[280px] lg:!h-[440px] lg:!w-[320px]"
               >
                 <LazyImage
-                  src={imageSrc}
+                  src={src}
                   alt={`${alt} ${index + 1}`}
                   width={800}
-                  height={600}
-                  priority={index === CENTER_SLIDE}
-                  className="h-full w-full rounded-2xl object-cover"
+                  height={1200}
+                  priority={index === centerSlide}
+                  className="h-full w-full rounded-2xl object-cover object-center"
                   draggable={false}
                 />
               </SwiperSlide>

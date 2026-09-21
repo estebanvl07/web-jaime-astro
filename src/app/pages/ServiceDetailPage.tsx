@@ -75,8 +75,11 @@ export default function ServiceDetailPage() {
     .filter((s) => s.category === service.category && s.slug !== service.slug)
     .slice(0, 3);
 
-  const { image: serviceImage, overlayImage: serviceOverlayImage } =
-    getServiceImage(service.slug);
+  const {
+    image: serviceImage,
+    overlayImage: serviceOverlayImage,
+    overlayAlt: serviceOverlayAlt,
+  } = getServiceImage(service.slug);
   const isEmptyImage = isEmptyServiceImage(serviceImage);
 
   return (
@@ -174,6 +177,7 @@ export default function ServiceDetailPage() {
               <ServiceImage
                 src={serviceImage}
                 overlaySrc={serviceOverlayImage}
+                overlayAlt={serviceOverlayAlt}
                 alt={service.title}
                 width={1280}
                 height={853}
@@ -183,7 +187,11 @@ export default function ServiceDetailPage() {
                 }}
                 className="w-full"
                 imageClassName="service-vt-image aspect-4/3 w-full object-cover object-top lg:aspect-5/4"
-                overlayClassName="h-24 w-24 sm:h-28 sm:w-28 lg:h-36 lg:w-36"
+                overlayClassName={
+                  service.slug === "ortodoncia-convencional"
+                    ? "h-16 w-16 sm:h-[72px] sm:w-[72px] lg:h-20 lg:w-20"
+                    : "h-24 w-24 sm:h-28 sm:w-28 lg:h-36 lg:w-36"
+                }
               />
             )}
           </div>

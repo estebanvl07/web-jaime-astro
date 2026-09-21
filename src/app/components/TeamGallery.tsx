@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Instagram, Linkedin } from "lucide-react";
 import { LazyImage } from "@/app/components/LazyImage";
@@ -12,32 +12,46 @@ type TeamGalleryProps = {
 };
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
+const ROTATE_MS = 5000;
 
 export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   const reduceMotion = useReducedMotion();
   const active = members[activeIndex];
+
+  useEffect(() => {
+    if (reduceMotion || paused || members.length < 2) return;
+
+    const id = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % members.length);
+    }, ROTATE_MS);
+
+    return () => window.clearInterval(id);
+  }, [reduceMotion, paused, members.length, activeIndex]);
 
   if (!active) return null;
 
   return (
     <div
-      className={`flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-12 xl:gap-16 ${className}`}
+      className={`flex flex-col gap-10 lg:gap-14 ${className}`}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
-      {/* Detalle del miembro activo */}
-      <div className="flex w-full flex-col justify-center lg:w-[34%] lg:max-w-sm lg:shrink-0">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active.name}
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: easeOut }}
-          >
-            <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={active.name}
+          className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end"
+          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
+          transition={{ duration: 0.35, ease: easeOut }}
+        >
+          <div className="max-w-xl">
+            <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold leading-[1.15] tracking-tight text-foreground sm:text-4xl">
               {active.name}
             </h3>
-            <p className="mt-2 text-sm font-medium text-muted-foreground sm:text-base">
+            <p className="mt-2 font-['Playfair_Display',serif] text-lg font-medium leading-snug text-muted-foreground sm:text-xl">
               {active.specialty}
             </p>
 
@@ -67,17 +81,16 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
                 )}
               </div>
             )}
+          </div>
 
-            <p className="mt-6 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-              {active.bio}
-            </p>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+          <p className="max-w-sm text-sm leading-relaxed text-muted-foreground sm:text-base lg:pb-1">
+            {active.bio}
+          </p>
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Galería accordion */}
       <div
-        className="flex h-[340px] w-full gap-2 sm:h-[400px] sm:gap-2.5 lg:h-[460px] lg:min-w-0 lg:flex-1"
+        className="grid grid-cols-3 gap-3 sm:gap-5"
         role="listbox"
         aria-label="Equipo profesional"
       >
@@ -85,64 +98,28 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
           const isActive = index === activeIndex;
 
           return (
-            <motion.button
+            <button
               key={member.name}
               type="button"
               role="option"
               aria-selected={isActive}
               aria-label={`Ver perfil de ${member.name}`}
               onClick={() => setActiveIndex(index)}
-              onMouseEnter={() => setActiveIndex(index)}
-              layout={!reduceMotion}
-              initial={false}
-              animate={{
-                flexGrow: isActive ? 4.2 : 1,
-                flexBasis: 0,
-              }}
-              transition={
-                reduceMotion
-                  ? { duration: 0 }
-                  : { duration: 0.55, ease: easeOut }
-              }
-              className="group relative min-w-0 overflow-hidden rounded-xl bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              style={{ flexShrink: 1 }}
+              className="group relative aspect-[1100/1314] min-w-0 overflow-hidden rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               <LazyImage
                 src={member.img}
                 alt={member.name}
-                width={640}
-                height={800}
+                width={1100}
+                height={1314}
                 priority={isActive}
-                className={`absolute inset-0 h-full w-full object-cover object-top transition-[filter,transform] duration-500 ease-out ${
+                className={`absolute inset-0 h-full w-full object-contain object-center transition-[filter] duration-500 ease-out ${
                   isActive
-                    ? "scale-100 grayscale-0"
-                    : "scale-105 grayscale group-hover:grayscale-[40%]"
+                    ? "grayscale-0"
+                    : "grayscale group-hover:grayscale-0"
                 }`}
               />
-
-              {/* Overlay sutil en inactivos */}
-              <div
-                className={`pointer-events-none absolute inset-0 transition-colors duration-400 ${
-                  isActive ? "bg-transparent" : "bg-foreground/25"
-                }`}
-              />
-
-              {/* Nombre en franja activa (móvil / refuerzo) */}
-              <AnimatePresence>
-                {isActive && (
-                  <motion.div
-                    initial={reduceMotion ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={reduceMotion ? undefined : { opacity: 0 }}
-                    className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/55 via-foreground/15 to-transparent px-3 pb-3 pt-10 lg:hidden"
-                  >
-                    <p className="truncate text-left text-sm font-semibold text-white">
-                      {member.name}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
+            </button>
           );
         })}
       </div>

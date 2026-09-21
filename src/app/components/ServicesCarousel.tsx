@@ -15,6 +15,7 @@ export type ServiceCardItem = {
   description: string;
   image: string;
   overlayImage?: string;
+  overlayAlt?: string;
   slug: string;
 };
 
@@ -74,7 +75,7 @@ function ServiceCard({
           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-[3px] border-white/90 shadow-[0_6px_20px_rgba(0,0,0,0.3)] sm:h-[72px] sm:w-[72px]">
             <LazyImage
               src={service.overlayImage}
-              alt="Alineadores dentales"
+              alt={service.overlayAlt ?? "Detalle del tratamiento"}
               priority
               className="h-full w-full object-cover object-center"
             />

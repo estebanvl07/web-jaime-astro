@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Star, Check, ArrowUpRight, MapPin, ExternalLink } from "lucide-react";
 import { Link } from "react-router";
-import imgClinica from "@/imports/assets/90ebfb78fbf8f207012f653657adadf619c96529.avif?url";
 import svgPaths from "@/imports/svg-lnp12anmc4";
 import { ImageCardsSwiper } from "@/app/components/ImageCardsSwiper";
 import { ServicesCarousel } from "@/app/components/ServicesCarousel";
@@ -16,6 +15,8 @@ import { WhatsAppFloat } from "@/app/components/WhatsAppFloat";
 import { services as servicesData } from "@/app/data/services";
 import { getServiceImage } from "@/app/data/serviceImages";
 import { teamMembers } from "@/app/data/team";
+import { googleReviews } from "@/app/data/reviews";
+import { ReviewCards } from "@/app/components/ReviewCards";
 import { homeFaqs } from "@/app/data/faqs";
 import { siteInfo } from "@/app/data/site";
 import {
@@ -27,6 +28,14 @@ import {
 // import { ThemeToggle } from "@/app/components/ThemeToggle"; // dark mode desactivado
 
 const HERO_IMAGE = "/images/close-up-boy-dentist.avif";
+
+const PLACE_IMAGES = [
+  "/images/places/place_1.jpg",
+  "/images/places/place_2.jpg",
+  "/images/places/place_3.jpg",
+  "/images/places/place_4.jpg",
+  "/images/places/place_5.jpg",
+];
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -58,7 +67,7 @@ function WhatsAppIcon() {
 }
 
 const services = servicesData.map((service) => {
-  const { image, overlayImage } = getServiceImage(service.slug);
+  const { image, overlayImage, overlayAlt } = getServiceImage(service.slug);
 
   return {
     title: service.title,
@@ -66,6 +75,7 @@ const services = servicesData.map((service) => {
     slug: service.slug,
     image,
     overlayImage,
+    overlayAlt,
   };
 });
 
@@ -535,8 +545,8 @@ export default function App() {
           >
             <LazyMount className="w-full" minHeight={480}>
               <ImageCardsSwiper
-                imageSrc={imgClinica}
-                alt="Nuestra Experiencia — equipamiento de vanguardia"
+                images={PLACE_IMAGES}
+                alt="Consultorio odontológico"
                 className="w-full"
               />
             </LazyMount>
@@ -649,7 +659,7 @@ export default function App() {
             viewport={viewport}
             transition={{ duration: 0.5, ease: easeOut }}
           >
-            <LazyMount minHeight={460}>
+            <LazyMount minHeight={560}>
               <TeamGallery members={teamMembers} />
             </LazyMount>
           </motion.div>
@@ -658,7 +668,8 @@ export default function App() {
 
       {/* TESTIMONIALS SECTION */}
       <section id="testimonios" className="bg-background py-20 lg:py-28">
-        <div className="mx-auto grid max-w-[1320px] items-center gap-12 px-6 lg:grid-cols-[1fr_minmax(0,520px)] lg:gap-16 lg:px-10">
+        <div className="mx-auto max-w-[1320px] px-6 lg:px-10">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(0,520px)] lg:gap-16">
           <motion.div
             className="flex flex-col gap-8"
             initial="hidden"
@@ -758,6 +769,8 @@ export default function App() {
               </span>
             </a>
           </motion.article>
+        </div>
+        <ReviewCards reviews={googleReviews} />
         </div>
       </section>
 
