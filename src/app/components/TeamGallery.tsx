@@ -33,11 +33,69 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
   if (!active) return null;
 
   return (
-    <div
-      className={`flex flex-col gap-10 lg:gap-14 ${className}`}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
+    <div className={className}>
+      <div className="flex flex-col gap-14 lg:hidden">
+        {members.map((member, index) => {
+          const alignRight = index % 2 === 1;
+
+          return (
+            <article key={member.name} className="flex flex-col gap-5">
+              <div className={alignRight ? "text-right" : "text-left"}>
+                <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold leading-[1.15] tracking-tight text-foreground">
+                  {member.name}
+                </h3>
+                <p className="mt-2 font-['Playfair_Display',serif] text-lg font-medium leading-snug text-muted-foreground">
+                  {member.specialty}
+                </p>
+                {(member.linkedin || member.instagram) && (
+                  <div
+                    className={`mt-4 flex items-center gap-3 ${alignRight ? "justify-end" : ""}`}
+                  >
+                    {member.linkedin && (
+                      <a
+                        href={member.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground/80"
+                        aria-label={`LinkedIn de ${member.name}`}
+                      >
+                        <Linkedin size={18} strokeWidth={1.75} />
+                      </a>
+                    )}
+                    {member.instagram && (
+                      <a
+                        href={member.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground/80"
+                        aria-label={`Instagram de ${member.name}`}
+                      >
+                        <Instagram size={18} strokeWidth={1.75} />
+                      </a>
+                    )}
+                  </div>
+                )}
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  {member.bio}
+                </p>
+              </div>
+              <LazyImage
+                src={member.img}
+                alt={member.name}
+                width={1100}
+                height={1314}
+                className="h-auto w-full"
+              />
+            </article>
+          );
+        })}
+      </div>
+
+      <div
+        className="hidden flex-col gap-14 lg:flex"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
       <AnimatePresence mode="wait">
         <motion.div
           key={active.name}
@@ -123,6 +181,7 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
           );
         })}
       </div>
+    </div>
     </div>
   );
 }

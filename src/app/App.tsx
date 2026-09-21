@@ -707,21 +707,21 @@ export default function App() {
             <motion.div
               variants={fadeUp}
               transition={transition}
-              className="flex gap-10"
+              className="flex gap-6 sm:gap-10"
             >
               <div>
-                <p className="font-['Playfair_Display',serif] text-5xl font-semibold text-foreground">
+                <p className="font-['Playfair_Display',serif] text-3xl font-semibold text-foreground sm:text-5xl">
                   {siteInfo.successfulTreatments}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                   Tratamientos exitosos
                 </p>
               </div>
               <div>
-                <p className="font-['Playfair_Display',serif] text-5xl font-semibold text-foreground">
+                <p className="font-['Playfair_Display',serif] text-3xl font-semibold text-foreground sm:text-5xl">
                   Desde {siteInfo.sinceYear}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                   Años de experiencia
                 </p>
               </div>
