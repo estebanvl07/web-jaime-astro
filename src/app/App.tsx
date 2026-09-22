@@ -485,7 +485,7 @@ export default function App() {
             <motion.div
               variants={fadeUp}
               transition={transition}
-              className="mt-10 flex gap-8 border-t border-border pt-8"
+              className="mt-10 flex gap-6 border-t border-border pt-8 sm:gap-8"
             >
               {[
                 {
@@ -498,10 +498,10 @@ export default function App() {
                 },
               ].map((s, i) => (
                 <div key={i}>
-                  <p className="font-['Playfair_Display',serif] text-4xl font-bold text-primary">
+                  <p className="font-['Playfair_Display',serif] text-3xl font-bold text-primary sm:text-4xl">
                     {s.value}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                     {s.label}
                   </p>
                 </div>

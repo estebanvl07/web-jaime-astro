@@ -35,12 +35,9 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
   return (
     <div className={className}>
       <div className="flex flex-col gap-14 lg:hidden">
-        {members.map((member, index) => {
-          const alignRight = index % 2 === 1;
-
-          return (
-            <article key={member.name} className="flex flex-col gap-5">
-              <div className={alignRight ? "text-right" : "text-left"}>
+        {members.map((member) => (
+            <article key={member.name} className="flex flex-col gap-5 text-left">
+              <div>
                 <h3 className="font-['Playfair_Display',serif] text-3xl font-semibold leading-[1.15] tracking-tight text-foreground">
                   {member.name}
                 </h3>
@@ -48,9 +45,7 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
                   {member.specialty}
                 </p>
                 {(member.linkedin || member.instagram) && (
-                  <div
-                    className={`mt-4 flex items-center gap-3 ${alignRight ? "justify-end" : ""}`}
-                  >
+                  <div className="mt-4 flex items-center gap-3">
                     {member.linkedin && (
                       <a
                         href={member.linkedin}
@@ -87,8 +82,7 @@ export function TeamGallery({ members, className = "" }: TeamGalleryProps) {
                 className="h-auto w-full"
               />
             </article>
-          );
-        })}
+        ))}
       </div>
 
       <div
