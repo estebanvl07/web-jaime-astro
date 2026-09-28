@@ -108,7 +108,11 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <div className="bg-brand-dark text-[11px] text-white/75 sm:text-xs">
+      <div
+        className={`text-[11px] text-white/75 sm:text-xs ${
+          solid ? "bg-brand-dark" : "bg-transparent"
+        }`}
+      >
         <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-12">
           <p className="flex min-w-0 items-center gap-1.5">
             <MapPin
@@ -184,11 +188,11 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
               href={siteInfo.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-gold inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold sm:px-5"
+              aria-label="Agenda tu cita"
+              className="btn-gold inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold lg:h-auto lg:w-auto lg:gap-2 lg:px-5 lg:py-2.5"
             >
-              <Calendar size={15} aria-hidden />
-              <span className="hidden min-[400px]:inline">Agenda tu cita</span>
-              <span className="min-[400px]:hidden">Agendar</span>
+              <Calendar size={16} aria-hidden />
+              <span className="hidden lg:inline">Agenda tu cita</span>
             </a>
 
             {variant === "home" ? (

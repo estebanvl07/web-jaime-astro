@@ -93,7 +93,10 @@ export function Seo({
     upsertMeta("property", "og:description", description);
     upsertMeta("property", "og:url", url);
     upsertMeta("property", "og:image", imageUrl);
-    upsertMeta("property", "og:image:alt", siteInfo.name);
+    upsertMeta("property", "og:image:alt", siteInfo.ogImageAlt);
+    upsertMeta("property", "og:image:type", "image/png");
+    upsertMeta("property", "og:image:width", String(siteInfo.ogImageWidth));
+    upsertMeta("property", "og:image:height", String(siteInfo.ogImageHeight));
 
     upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", fullTitle);
@@ -174,6 +177,12 @@ export function buildDentistJsonLd() {
         dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
         opens: "14:00",
         closes: "17:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "08:00",
+        closes: "13:00",
       },
     ],
   };

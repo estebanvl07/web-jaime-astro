@@ -43,9 +43,12 @@ export const siteInfo = {
     days: "Lunes a viernes",
     morning: "9:00 a. m. – 12:00 p. m.",
     afternoon: "2:00 p. m. – 5:00 p. m.",
+    saturday: "Sábados",
+    saturdayHours: "8:00 a. m. – 1:00 p. m.",
     summary:
-      "Lunes a viernes, de 9:00 a. m. a 12:00 p. m. y de 2:00 p. m. a 5:00 p. m.",
-    compact: "Lun–vie · 9:00 a. m.–12:00 p. m. y 2:00–5:00 p. m.",
+      "Lunes a viernes, de 9:00 a. m. a 12:00 p. m. y de 2:00 p. m. a 5:00 p. m. Sábados, de 8:00 a. m. a 1:00 p. m.",
+    compact:
+      "Lun–vie · 9:00 a. m.–12:00 p. m. y 2:00–5:00 p. m. · Sáb · 8:00 a. m.–1:00 p. m.",
   },
   whatsapp: "573016448128",
   whatsappUrl: "https://wa.me/573016448128",
@@ -60,7 +63,10 @@ export const siteInfo = {
   successfulTreatments: "1.000+",
   /** Código de verificación de Google Search Console (solo el valor del content) */
   googleSiteVerification: "" as string,
-  ogImagePath: "/og-image.webp",
+  ogImagePath: "/images/profesionales/prof-01.png",
+  ogImageWidth: 1098,
+  ogImageHeight: 1299,
+  ogImageAlt: "Dr. Jaime Pinzón, odontólogo especialista en ortodoncia",
   faviconPath: "/favicon.png",
   mapsUrl:
     "https://www.google.com/maps/search/?api=1&query=Cra.+41+%2371-25,+Las+Delicias,+Barranquilla,+Dr+Jaime+Pinzon+Odontologia",

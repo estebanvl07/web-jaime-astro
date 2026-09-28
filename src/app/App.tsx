@@ -36,7 +36,7 @@ import {
 } from "@/app/seo/Seo";
 // import { ThemeToggle } from "@/app/components/ThemeToggle"; // dark mode desactivado
 
-const HERO_IMAGE = "/images/places/consultorio.avif";
+const HERO_IMAGE = "/images/hero.avif";
 
 const PLACE_IMAGES = [
   "/images/places/place_1.jpg",
@@ -212,7 +212,11 @@ export default function App() {
     : { duration: 0.65, ease: easeOut };
 
   const homeJsonLd = useMemo(
-    () => [buildDentistJsonLd(), buildWebsiteJsonLd(), buildFaqJsonLd(homeFaqs)],
+    () => [
+      buildDentistJsonLd(),
+      buildWebsiteJsonLd(),
+      buildFaqJsonLd(homeFaqs),
+    ],
     [],
   );
 
@@ -225,15 +229,14 @@ export default function App() {
       <section className="relative min-h-dvh overflow-hidden">
         <img
           src={HERO_IMAGE}
-          alt="Consultorio de Dr. Jaime Pinzón en Barranquilla"
-          width={5582}
-          height={3429}
+          alt="Dr. Jaime Pinzón, odontólogo especialista en ortodoncia"
+          width={1672}
+          height={941}
           fetchpriority="high"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover object-[72%_top]"
         />
 
-        {/* Gradiente marca: ink + bronce para legibilidad sin apagar la foto */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -257,7 +260,7 @@ export default function App() {
           }}
         />
 
-        <div className="relative z-[1] mx-auto flex min-h-dvh w-full max-w-[1320px] flex-col justify-end px-6 pb-10 pt-[calc(var(--header-offset)+1.5rem)] sm:px-8 sm:pb-12 lg:justify-center lg:px-12 lg:pb-16 xl:px-16 2xl:px-12">
+        <div className="relative z-[1] mx-auto flex min-h-dvh w-full max-w-[1320px] flex-col justify-center px-6 pb-10 pt-[calc(var(--header-offset)+1.5rem)] sm:px-8 sm:pb-12 lg:px-12 lg:pb-16 xl:px-16 2xl:px-12">
           <motion.div
             className="flex max-w-xl flex-col gap-4 sm:gap-5 lg:gap-6"
             variants={stagger}
@@ -401,8 +404,8 @@ export default function App() {
               <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
                 En Dr. Jaime Pinzón Odontología Especializada ofrecemos
                 tratamientos enfocados en cuidar la salud oral, mejorar la
-                función y transformar la estética de la sonrisa. Cada tratamiento
-                comienza con una valoración personalizada.
+                función y transformar la estética de la sonrisa. Cada
+                tratamiento comienza con una valoración personalizada.
               </p>
               <p className="text-sm text-muted-foreground">
                 {services.length} tratamientos disponibles
@@ -466,8 +469,8 @@ export default function App() {
             >
               Por eso, nos tomamos el tiempo para escuchar tus necesidades,
               resolver tus inquietudes y acompañarte en cada etapa de tu
-              tratamiento, buscando que te sientas cómodo, seguro y bien atendido
-              desde el primer momento.
+              tratamiento, buscando que te sientas cómodo, seguro y bien
+              atendido desde el primer momento.
             </motion.p>
 
             <motion.div
@@ -656,8 +659,8 @@ export default function App() {
               className="max-w-xl text-base leading-relaxed text-muted-foreground"
             >
               Ortodoncia, encía y estética de pacientes atendidos aquí. Hay
-              fotos de tratamientos en curso y de resultados ya terminados.
-              Cada caso es distinto: el tuyo se define en la valoración.
+              fotos de tratamientos en curso y de resultados ya terminados. Cada
+              caso es distinto: el tuyo se define en la valoración.
             </motion.p>
           </motion.div>
 
@@ -697,9 +700,8 @@ export default function App() {
               transition={transition}
               className="text-base leading-relaxed text-muted-foreground lg:text-lg"
             >
-              Un equipo especializado en ortodoncia, periodoncia y
-              odontología integral, con más de 18 años de experiencia
-              profesional.
+              Un equipo especializado en ortodoncia, periodoncia y odontología
+              integral, con más de 18 años de experiencia profesional.
             </motion.p>
           </motion.div>
 
@@ -746,9 +748,9 @@ export default function App() {
                 transition={transition}
                 className="max-w-xl text-base leading-relaxed text-muted-foreground"
               >
-                Conoce cómo son nuestros procedimientos en el consultorio.
-                En el canal mostramos ortodoncia, encía y estética, tal como
-                los atendemos aquí.
+                Conoce cómo son nuestros procedimientos en el consultorio. En el
+                canal mostramos ortodoncia, encía y estética, tal como los
+                atendemos aquí.
               </motion.p>
             </div>
             <motion.a
@@ -773,108 +775,113 @@ export default function App() {
       {/* TESTIMONIALS SECTION */}
       <section id="testimonios" className="bg-background py-20 lg:py-28">
         <div className="mx-auto max-w-[1320px] px-6 lg:px-10">
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(0,520px)] lg:gap-16">
-          <motion.div
-            className="flex flex-col gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewport}
-            variants={stagger}
-          >
-            <div>
-              <motion.span
-                variants={fadeUp}
-                transition={transition}
-                className={`${SECTION_BADGE_CLASS} mb-6`}
-              >
-                Reseñas
-              </motion.span>
-              <motion.h2
-                variants={fadeUp}
-                transition={transition}
-                className="mb-4 font-['Playfair_Display',serif] text-4xl font-semibold text-foreground lg:text-5xl"
-              >
-                Lo que dicen
-                <br className="hidden sm:block" /> nuestros pacientes
-              </motion.h2>
-              <motion.p
-                variants={fadeUp}
-                transition={transition}
-                className="max-w-xl text-base leading-relaxed text-muted-foreground lg:text-lg"
-              >
-                Cada tratamiento comienza con confianza. Si ya nos visitaste,
-                tu reseña en Google ayuda a otras personas a dar el primer
-                paso hacia una sonrisa más saludable.
-              </motion.p>
-            </div>
-
+          <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(0,520px)] lg:gap-16">
             <motion.div
-              variants={fadeUp}
-              transition={transition}
-              className="flex gap-6 sm:gap-10"
+              className="flex flex-col gap-8"
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewport}
+              variants={stagger}
             >
               <div>
-                <p className="font-['Playfair_Display',serif] text-3xl font-semibold text-foreground sm:text-5xl">
-                  {siteInfo.successfulTreatments}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                  Tratamientos exitosos
-                </p>
+                <motion.span
+                  variants={fadeUp}
+                  transition={transition}
+                  className={`${SECTION_BADGE_CLASS} mb-6`}
+                >
+                  Reseñas
+                </motion.span>
+                <motion.h2
+                  variants={fadeUp}
+                  transition={transition}
+                  className="mb-4 font-['Playfair_Display',serif] text-4xl font-semibold text-foreground lg:text-5xl"
+                >
+                  Lo que dicen
+                  <br className="hidden sm:block" /> nuestros pacientes
+                </motion.h2>
+                <motion.p
+                  variants={fadeUp}
+                  transition={transition}
+                  className="max-w-xl text-base leading-relaxed text-muted-foreground lg:text-lg"
+                >
+                  Cada tratamiento comienza con confianza. Si ya nos visitaste,
+                  tu reseña en Google ayuda a otras personas a dar el primer
+                  paso hacia una sonrisa más saludable.
+                </motion.p>
               </div>
-              <div>
-                <p className="font-['Playfair_Display',serif] text-3xl font-semibold text-foreground sm:text-5xl">
-                  Desde {siteInfo.sinceYear}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                  Años de experiencia
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
 
-          <motion.article
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewport}
-            transition={transition}
-            className="rounded-[28px] border border-border bg-card p-6 shadow-sm sm:p-8"
-          >
-            <div className="mb-5 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <GoogleMark />
-                <p className="text-sm font-semibold text-foreground">
-                  Reseñas en Google
-                </p>
-              </div>
-              <div className="flex gap-0.5 text-[var(--star)]">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={16} fill="currentColor" strokeWidth={0} />
-                ))}
-              </div>
-            </div>
-            <h3 className="font-['Playfair_Display',serif] text-2xl font-semibold text-foreground">
-              Comparte tu experiencia
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Las reseñas de Google son la forma más transparente de contar
-              cómo fue tu atención. Si ya terminaste tu tratamiento o tu
-              valoración, déjanos tu opinión y ayuda a más pacientes a
-              encontrarnos.
-            </p>
-            <a
-              href={siteInfo.googleReviewUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-gold mt-6 inline-flex items-center gap-3 rounded-full py-1.5 pl-5 pr-1.5 text-sm font-semibold"
+              <motion.div
+                variants={fadeUp}
+                transition={transition}
+                className="flex gap-6 sm:gap-10"
+              >
+                <div>
+                  <p className="font-['Playfair_Display',serif] text-3xl font-semibold text-foreground sm:text-5xl">
+                    {siteInfo.successfulTreatments}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                    Tratamientos exitosos
+                  </p>
+                </div>
+                <div>
+                  <p className="font-['Playfair_Display',serif] text-3xl font-semibold text-foreground sm:text-5xl">
+                    Desde {siteInfo.sinceYear}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                    Años de experiencia
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            <motion.article
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={viewport}
+              transition={transition}
+              className="rounded-[28px] border border-border bg-card p-6 shadow-sm sm:p-8"
             >
-              Escribir reseña en Google
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-dark/15">
-                <ArrowUpRight size={16} strokeWidth={2.25} />
-              </span>
-            </a>
-          </motion.article>
-        </div>
-        <ReviewCards reviews={googleReviews} />
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <GoogleMark />
+                  <p className="text-sm font-semibold text-foreground">
+                    Reseñas en Google
+                  </p>
+                </div>
+                <div className="flex gap-0.5 text-[var(--star)]">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      size={16}
+                      fill="currentColor"
+                      strokeWidth={0}
+                    />
+                  ))}
+                </div>
+              </div>
+              <h3 className="font-['Playfair_Display',serif] text-2xl font-semibold text-foreground">
+                Comparte tu experiencia
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Las reseñas de Google son la forma más transparente de contar
+                cómo fue tu atención. Si ya terminaste tu tratamiento o tu
+                valoración, déjanos tu opinión y ayuda a más pacientes a
+                encontrarnos.
+              </p>
+              <a
+                href={siteInfo.googleReviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold mt-6 inline-flex items-center gap-3 rounded-full py-1.5 pl-5 pr-1.5 text-sm font-semibold"
+              >
+                Escribir reseña en Google
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-dark/15">
+                  <ArrowUpRight size={16} strokeWidth={2.25} />
+                </span>
+              </a>
+            </motion.article>
+          </div>
+          <ReviewCards reviews={googleReviews} />
         </div>
       </section>
 
@@ -932,6 +939,10 @@ export default function App() {
                   {siteInfo.hours.days}
                   <span className="mt-0.5 block">
                     {siteInfo.hours.morning} y {siteInfo.hours.afternoon}
+                  </span>
+                  <span className="mt-2 block">{siteInfo.hours.saturday}</span>
+                  <span className="mt-0.5 block">
+                    {siteInfo.hours.saturdayHours}
                   </span>
                 </span>
               </motion.p>
@@ -1041,9 +1052,7 @@ export default function App() {
             <FaqList
               items={homeFaqs}
               openIndex={openFaq}
-              onToggle={(index) =>
-                setOpenFaq(openFaq === index ? null : index)
-              }
+              onToggle={(index) => setOpenFaq(openFaq === index ? null : index)}
             />
           </motion.div>
 
@@ -1089,7 +1098,9 @@ export default function App() {
               <p className="mt-2 text-sm text-white/65">{siteInfo.slogan}</p>
               <p className="mt-3 text-sm text-white/65">{siteInfo.address}</p>
               <p className="text-sm text-white/65">Tel: {siteInfo.phone}</p>
-              <p className="mt-2 text-sm text-white/65">{siteInfo.hours.summary}</p>
+              <p className="mt-2 text-sm text-white/65">
+                {siteInfo.hours.summary}
+              </p>
             </div>
 
             <div className="flex flex-wrap items-start gap-6 md:col-span-3 md:justify-end">
