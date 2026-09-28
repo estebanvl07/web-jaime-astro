@@ -228,8 +228,8 @@ export function RealCases() {
   }, [columnCount]);
 
   function onColumnPointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
     heldRef.current = event.currentTarget;
-    if (event.pointerType !== "mouse" || event.button !== 0) return;
     dragRef.current = {
       id: event.pointerId,
       y: event.clientY,
@@ -237,21 +237,36 @@ export function RealCases() {
       el: event.currentTarget,
     };
     draggedRef.current = false;
-    event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function onColumnPointerMove(event: PointerEvent<HTMLDivElement>) {
     const drag = dragRef.current;
     if (!drag || drag.id !== event.pointerId) return;
     const delta = event.clientY - drag.y;
-    if (Math.abs(delta) > 6) draggedRef.current = true;
+    if (Math.abs(delta) <= 8) return;
+    draggedRef.current = true;
+    if (event.pointerType !== "mouse") return;
+    if (!drag.el.hasPointerCapture(event.pointerId)) {
+      drag.el.setPointerCapture(event.pointerId);
+    }
     drag.el.scrollTop = drag.top - delta;
   }
 
   function onColumnPointerUp(event: PointerEvent<HTMLDivElement>) {
+    const dragged = draggedRef.current;
     if (heldRef.current === event.currentTarget) heldRef.current = null;
-    if (dragRef.current?.id !== event.pointerId) return;
-    dragRef.current = null;
+    if (dragRef.current?.id === event.pointerId) dragRef.current = null;
+    if (dragged) return;
+    const node = event.target;
+    if (!(node instanceof Element)) return;
+    const button = node.closest("button");
+    if (!button || !event.currentTarget.contains(button)) return;
+    const label = button.getAttribute("aria-label") ?? "";
+    const alt = label.startsWith("Ampliar: ")
+      ? label.slice("Ampliar: ".length)
+      : "";
+    const index = CASES.findIndex((item) => item.alt === alt);
+    if (index >= 0) setActive(index);
   }
 
   return (
