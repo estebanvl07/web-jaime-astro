@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { LazyImage } from "@/app/components/LazyImage";
 
@@ -104,6 +104,23 @@ const CASES: CasePhoto[] = [
   },
 ];
 
+function useColumnCount() {
+  const query = "(min-width: 1024px)";
+  const [count, setCount] = useState(() =>
+    window.matchMedia(query).matches ? 3 : 2,
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const update = () => setCount(media.matches ? 3 : 2);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  return count;
+}
+
 export function RealCases() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -136,9 +153,106 @@ export function RealCases() {
     });
   }
 
-  const columns = [0, 1, 2].map((column) =>
-    CASES.filter((_, index) => index % 3 === column),
+  const columnCount = useColumnCount();
+  const columnRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const dragRef = useRef<{
+    id: number;
+    y: number;
+    top: number;
+    el: HTMLDivElement;
+  } | null>(null);
+  const heldRef = useRef<HTMLDivElement | null>(null);
+  const draggedRef = useRef(false);
+  const columns = Array.from({ length: columnCount }, (_, column) =>
+    CASES.filter((_, index) => index % columnCount === column),
   );
+
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const positions = new WeakMap<HTMLDivElement, number>();
+    let frame = 0;
+    let last = performance.now();
+
+    const list = () =>
+      columnRefs.current.filter((el): el is HTMLDivElement => el != null);
+
+    const wrap = (pos: number, copy: number) => {
+      if (copy <= 0) return 0;
+      const looped = pos % copy;
+      return looped < 0 ? looped + copy : looped;
+    };
+
+    const prime = (el: HTMLDivElement) => {
+      el.style.scrollBehavior = "auto";
+      if (el.dataset.primed === "1") return;
+      const copy = el.scrollHeight / 2;
+      if (copy <= el.clientHeight) return;
+      const start = el.dataset.drift === "down" ? copy - 1 : 0;
+      el.scrollTop = start;
+      positions.set(el, start);
+      el.dataset.primed = "1";
+    };
+
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 34) / 1000;
+      last = now;
+      for (const el of list()) {
+        prime(el);
+        if (reduce || el.dataset.primed !== "1") continue;
+        const copy = el.scrollHeight / 2;
+        const down = el.dataset.drift === "down";
+        let pos = positions.get(el) ?? el.scrollTop;
+        if (heldRef.current === el || Math.abs(el.scrollTop - pos) > 2) {
+          pos = el.scrollTop;
+        } else {
+          pos += ((down ? -1 : 1) * copy) / (down ? 58 : 46) * dt;
+        }
+        pos = wrap(pos, copy);
+        positions.set(el, pos);
+        if (Math.abs(el.scrollTop - pos) > 0.2) el.scrollTop = pos;
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    const observer = new ResizeObserver(() => {
+      for (const el of list()) prime(el);
+    });
+    for (const el of list()) observer.observe(el);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      for (const el of list()) delete el.dataset.primed;
+    };
+  }, [columnCount]);
+
+  function onColumnPointerDown(event: PointerEvent<HTMLDivElement>) {
+    heldRef.current = event.currentTarget;
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    dragRef.current = {
+      id: event.pointerId,
+      y: event.clientY,
+      top: event.currentTarget.scrollTop,
+      el: event.currentTarget,
+    };
+    draggedRef.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function onColumnPointerMove(event: PointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.id !== event.pointerId) return;
+    const delta = event.clientY - drag.y;
+    if (Math.abs(delta) > 6) draggedRef.current = true;
+    drag.el.scrollTop = drag.top - delta;
+  }
+
+  function onColumnPointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (heldRef.current === event.currentTarget) heldRef.current = null;
+    if (dragRef.current?.id !== event.pointerId) return;
+    dragRef.current = null;
+  }
 
   return (
     <>
@@ -179,45 +293,59 @@ export function RealCases() {
         </div>
 
         <div className="cases-stage relative h-[min(72vh,760px)] overflow-hidden">
-          <div className="grid h-full grid-cols-3 gap-3">
+          <div
+            className={`grid h-full min-h-0 gap-3 ${columnCount === 2 ? "grid-cols-2" : "grid-cols-3"}`}
+          >
             {columns.map((column, columnIndex) => (
-              <div key={columnIndex} className="h-full overflow-hidden">
-                <div
-                  className={
-                    columnIndex === 1 ? "cases-drift-down" : "cases-drift-up"
-                  }
-                >
-                  {[0, 1].map((copy) => (
-                    <div
-                      key={copy}
-                      className="flex flex-col gap-3 pb-3"
-                      aria-hidden={copy === 1 ? true : undefined}
-                    >
-                      {column.map((item) => {
-                        const index = CASES.indexOf(item);
-                        return (
-                          <button
-                            key={`${item.src}-${copy}`}
-                            type="button"
-                            onClick={() => setActive(index)}
-                            className="block w-full overflow-hidden rounded-2xl bg-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-                            aria-label={`Ampliar: ${item.alt}`}
-                            tabIndex={copy === 0 ? 0 : -1}
-                          >
-                            <LazyImage
-                              src={item.src}
-                              alt={copy === 0 ? item.alt : ""}
-                              width={item.width}
-                              height={item.height}
-                              priority={copy === 0}
-                              className="h-[280px] w-full object-cover sm:h-[340px] lg:h-[420px]"
-                            />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
+              <div
+                key={columnIndex}
+                ref={(node) => {
+                  columnRefs.current[columnIndex] = node;
+                }}
+                data-drift={columnIndex % 2 === 0 ? "up" : "down"}
+                className="cases-column h-full min-h-0"
+                onPointerDown={onColumnPointerDown}
+                onPointerMove={onColumnPointerMove}
+                onPointerUp={onColumnPointerUp}
+                onPointerCancel={onColumnPointerUp}
+              >
+                {[0, 1].map((copy) => (
+                  <div
+                    key={copy}
+                    className="flex flex-col gap-3 pb-3"
+                    aria-hidden={copy === 1 ? true : undefined}
+                  >
+                    {column.map((item) => {
+                      const index = CASES.indexOf(item);
+                      return (
+                        <button
+                          key={`${item.src}-${copy}`}
+                          type="button"
+                          onClick={(event) => {
+                            if (draggedRef.current) {
+                              event.preventDefault();
+                              draggedRef.current = false;
+                              return;
+                            }
+                            setActive(index);
+                          }}
+                          className="block w-full overflow-hidden rounded-2xl bg-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                          aria-label={`Ampliar: ${item.alt}`}
+                          tabIndex={copy === 0 ? 0 : -1}
+                        >
+                          <LazyImage
+                            src={item.src}
+                            alt={copy === 0 ? item.alt : ""}
+                            width={item.width}
+                            height={item.height}
+                            priority={copy === 0}
+                            className="h-[280px] w-full object-cover sm:h-[340px] lg:h-[420px]"
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
             ))}
           </div>

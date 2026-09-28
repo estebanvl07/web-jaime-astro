@@ -14,7 +14,7 @@ export const siteInfo = {
   slogan:
     "Cada sonrisa tiene una historia y queremos ser parte de ella",
   description:
-    "Consultorio odontológico en Barranquilla desde 2015. Ortodoncia, periodoncia, estética dental, implantes y rehabilitación oral con atención personalizada en Cra 41 #71-25, El Recreo.",
+    "Consultorio odontológico en Barranquilla desde 2015. Ortodoncia, periodoncia, estética dental, implantes y rehabilitación oral con atención personalizada en Cra 41 #71-25, Las Delicias.",
   keywords: [
     "odontólogo Barranquilla",
     "Dr Jaime Pinzón",
@@ -24,7 +24,7 @@ export const siteInfo = {
     "periodoncia",
     "estética dental",
     "rehabilitación oral",
-    "odontología El Recreo",
+    "odontología Las Delicias",
   ],
   /** Dominio canónico sin slash final */
   siteUrl: (envSiteUrl || "https://drjaime.netlify.app").replace(/\/$/, ""),
@@ -34,9 +34,9 @@ export const siteInfo = {
   region: "Atlántico",
   country: "CO",
   postalCode: "080002",
-  address: "Cra 41 #71-25, El Recreo, Barranquilla",
+  address: "Cra 41 #71-25, Las Delicias, Barranquilla",
   streetAddress: "Cra 41 #71-25",
-  neighborhood: "El Recreo",
+  neighborhood: "Las Delicias",
   phone: "3016448128",
   phoneE164: "+573016448128",
   hours: {
@@ -63,11 +63,11 @@ export const siteInfo = {
   ogImagePath: "/og-image.webp",
   faviconPath: "/favicon.png",
   mapsUrl:
-    "https://www.google.com/maps/search/?api=1&query=Cra.+41+%2371-25,+El+Recreo,+Barranquilla,+Dr+Jaime+Pinzon+Odontologia",
+    "https://www.google.com/maps/search/?api=1&query=Cra.+41+%2371-25,+Las+Delicias,+Barranquilla,+Dr+Jaime+Pinzon+Odontologia",
   mapEmbedUrl:
-    "https://www.google.com/maps?q=Cra.+41+%2371-25,+El+Recreo,+Barranquilla&hl=es&z=16&output=embed",
+    "https://www.google.com/maps?q=Cra.+41+%2371-25,+Las+Delicias,+Barranquilla&hl=es&z=16&output=embed",
   googleReviewUrl:
-    "https://www.google.com/maps/search/?api=1&query=Cra.+41+%2371-25,+El+Recreo,+Barranquilla,+Dr+Jaime+Pinzon+Odontologia",
+    "https://www.google.com/maps/search/?api=1&query=Cra.+41+%2371-25,+Las+Delicias,+Barranquilla,+Dr+Jaime+Pinzon+Odontologia",
 };
 
 export function absoluteUrl(path = "/"): string {
