@@ -1,12 +1,21 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Star, Check, ArrowUpRight, MapPin, ExternalLink } from "lucide-react";
+import {
+  Star,
+  Check,
+  ArrowUpRight,
+  MapPin,
+  ExternalLink,
+  Clock,
+} from "lucide-react";
 import { Link } from "react-router";
 import svgPaths from "@/imports/svg-lnp12anmc4";
 import { ImageCardsSwiper } from "@/app/components/ImageCardsSwiper";
 import { ServicesCarousel } from "@/app/components/ServicesCarousel";
 import { TeamGallery } from "@/app/components/TeamGallery";
 import { BeforeAfterCompare } from "@/app/components/BeforeAfterCompare";
+import { RealCases } from "@/app/components/RealCases";
+import { YoutubeGallery } from "@/app/components/YoutubeGallery";
 import { sectionBadgeClass } from "@/app/components/SectionBadge";
 import { FaqList } from "@/app/components/FaqList";
 import { LazyMount } from "@/app/components/LazyMount";
@@ -27,7 +36,7 @@ import {
 } from "@/app/seo/Seo";
 // import { ThemeToggle } from "@/app/components/ThemeToggle"; // dark mode desactivado
 
-const HERO_IMAGE = "/images/close-up-boy-dentist.avif";
+const HERO_IMAGE = "/images/places/consultorio.avif";
 
 const PLACE_IMAGES = [
   "/images/places/place_1.jpg",
@@ -216,12 +225,12 @@ export default function App() {
       <section className="relative min-h-dvh overflow-hidden">
         <img
           src={HERO_IMAGE}
-          alt="Atención odontológica especializada en Barranquilla"
-          width={1920}
-          height={1080}
+          alt="Consultorio de Dr. Jaime Pinzón en Barranquilla"
+          width={5582}
+          height={3429}
           fetchpriority="high"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover object-[62%_center] sm:object-[68%_center]"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
 
         {/* Gradiente marca: ink + bronce para legibilidad sin apagar la foto */}
@@ -617,6 +626,47 @@ export default function App() {
         </div>
       </section>
 
+      {/* REAL CASES */}
+      <section id="casos" className="bg-background py-20 lg:py-28">
+        <div className="mx-auto max-w-[1320px] px-6 lg:px-10">
+          <motion.div
+            className="mb-10 max-w-2xl lg:mb-14"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={stagger}
+          >
+            <motion.span
+              variants={fadeUp}
+              transition={transition}
+              className={`${SECTION_BADGE_CLASS} mb-6`}
+            >
+              Casos clínicos
+            </motion.span>
+            <motion.h2
+              variants={fadeUp}
+              transition={transition}
+              className="mb-4 font-['Playfair_Display',serif] text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl"
+            >
+              Caso por caso, en el consultorio
+            </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              transition={transition}
+              className="max-w-xl text-base leading-relaxed text-muted-foreground"
+            >
+              Ortodoncia, encía y estética de pacientes atendidos aquí. Hay
+              fotos de tratamientos en curso y de resultados ya terminados.
+              Cada caso es distinto: el tuyo se define en la valoración.
+            </motion.p>
+          </motion.div>
+
+          <LazyMount minHeight={640}>
+            <RealCases />
+          </LazyMount>
+        </div>
+      </section>
+
       {/* TEAM SECTION */}
       <section id="equipo" className="bg-background py-20 lg:py-28">
         <div className="mx-auto max-w-[1320px] px-6 lg:px-10">
@@ -663,6 +713,59 @@ export default function App() {
               <TeamGallery members={teamMembers} />
             </LazyMount>
           </motion.div>
+        </div>
+      </section>
+
+      {/* YOUTUBE */}
+      <section id="videos" className="bg-background py-20 lg:py-28">
+        <div className="mx-auto max-w-[1320px] px-6 lg:px-10">
+          <motion.div
+            className="mb-10 flex flex-col items-start gap-6 lg:mb-14 lg:flex-row lg:items-end lg:justify-between"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={stagger}
+          >
+            <div className="max-w-2xl">
+              <motion.span
+                variants={fadeUp}
+                transition={transition}
+                className={`${SECTION_BADGE_CLASS} mb-6`}
+              >
+                YouTube
+              </motion.span>
+              <motion.h2
+                variants={fadeUp}
+                transition={transition}
+                className="mb-4 font-['Playfair_Display',serif] text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl"
+              >
+                Videos del canal
+              </motion.h2>
+              <motion.p
+                variants={fadeUp}
+                transition={transition}
+                className="max-w-xl text-base leading-relaxed text-muted-foreground"
+              >
+                Publicaciones de {siteInfo.youtube} en YouTube: los dos videos
+                del canal y los shorts que acompañan los tratamientos.
+              </motion.p>
+            </div>
+            <motion.a
+              variants={fadeUp}
+              transition={transition}
+              href={siteInfo.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-primary/20 px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/5"
+            >
+              Ver canal
+              <ExternalLink size={15} strokeWidth={2.25} />
+            </motion.a>
+          </motion.div>
+
+          <LazyMount minHeight={420}>
+            <YoutubeGallery />
+          </LazyMount>
         </div>
       </section>
 
@@ -813,6 +916,23 @@ export default function App() {
                   strokeWidth={2.25}
                 />
                 <span>{siteInfo.address}</span>
+              </motion.p>
+              <motion.p
+                variants={fadeUp}
+                transition={transition}
+                className="mt-3 flex items-start gap-2 text-muted-foreground"
+              >
+                <Clock
+                  size={18}
+                  className="mt-0.5 shrink-0 text-primary"
+                  strokeWidth={2.25}
+                />
+                <span>
+                  {siteInfo.hours.days}
+                  <span className="mt-0.5 block">
+                    {siteInfo.hours.morning} y {siteInfo.hours.afternoon}
+                  </span>
+                </span>
               </motion.p>
             </div>
 
@@ -968,6 +1088,7 @@ export default function App() {
               <p className="mt-2 text-sm text-white/65">{siteInfo.slogan}</p>
               <p className="mt-3 text-sm text-white/65">{siteInfo.address}</p>
               <p className="text-sm text-white/65">Tel: {siteInfo.phone}</p>
+              <p className="mt-2 text-sm text-white/65">{siteInfo.hours.summary}</p>
             </div>
 
             <div className="flex flex-wrap items-start gap-6 md:col-span-3 md:justify-end">
@@ -986,6 +1107,22 @@ export default function App() {
                 className="text-sm text-white/65 transition-colors hover:text-brand"
               >
                 Instagram
+              </a>
+              <a
+                href={siteInfo.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
+              >
+                Facebook
+              </a>
+              <a
+                href={siteInfo.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-white/65 transition-colors hover:text-brand"
+              >
+                YouTube
               </a>
               <a
                 href="#servicios"

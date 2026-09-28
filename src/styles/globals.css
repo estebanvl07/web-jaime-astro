@@ -367,3 +367,44 @@ h6 {
     animation: none !important;
   }
 }
+
+@keyframes cases-drift-up {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@keyframes cases-drift-down {
+  from {
+    transform: translate3d(0, -50%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.cases-drift-up {
+  animation: cases-drift-up 46s linear infinite;
+}
+
+.cases-drift-down {
+  animation: cases-drift-down 58s linear infinite;
+}
+
+.cases-stage:hover .cases-drift-up,
+.cases-stage:hover .cases-drift-down,
+.cases-stage:focus-within .cases-drift-up,
+.cases-stage:focus-within .cases-drift-down {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cases-drift-up,
+  .cases-drift-down {
+    animation: none;
+    transform: none;
+  }
+}

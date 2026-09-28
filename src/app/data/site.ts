@@ -39,10 +39,23 @@ export const siteInfo = {
   neighborhood: "El Recreo",
   phone: "3016448128",
   phoneE164: "+573016448128",
+  hours: {
+    days: "Lunes a viernes",
+    morning: "9:00 a. m. – 12:00 p. m.",
+    afternoon: "2:00 p. m. – 5:00 p. m.",
+    summary:
+      "Lunes a viernes, de 9:00 a. m. a 12:00 p. m. y de 2:00 p. m. a 5:00 p. m.",
+    compact: "Lun–vie · 9:00 a. m.–12:00 p. m. y 2:00–5:00 p. m.",
+  },
   whatsapp: "573016448128",
   whatsappUrl: "https://wa.me/573016448128",
   instagram: "drjaimepinzon.odontologia",
   instagramUrl: "https://www.instagram.com/drjaimepinzon.odontologia",
+  facebook: "drjaimepinzonodontologia",
+  facebookUrl: "https://www.facebook.com/drjaimepinzonodontologia",
+  youtube: "@drjaimepinzonodontologia",
+  youtubeUrl: "https://www.youtube.com/@drjaimepinzonodontologia",
+  youtubeChannelUrl: "https://www.youtube.com/channel/UCuRjAOddn9UDHBnLxSJzSsg",
   sinceYear: 2015,
   successfulTreatments: "1.000+",
   /** Código de verificación de Google Search Console (solo el valor del content) */

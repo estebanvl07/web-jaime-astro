@@ -316,6 +316,7 @@ export default function ServiceDetailPage() {
             </p>
             <p className="mt-1 text-sm text-white/65">
               {siteInfo.address} · {siteInfo.phone}
+              <span className="mt-1 block">{siteInfo.hours.summary}</span>
             </p>
           </div>
           <p className="text-sm text-white/65">{siteInfo.slogan}</p>

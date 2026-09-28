@@ -146,7 +146,11 @@ export function buildDentistJsonLd() {
       latitude: 10.988,
       longitude: -74.807,
     },
-    sameAs: [siteInfo.instagramUrl],
+    sameAs: [
+      siteInfo.instagramUrl,
+      siteInfo.facebookUrl,
+      siteInfo.youtubeUrl,
+    ],
     areaServed: {
       "@type": "City",
       name: siteInfo.city,
@@ -158,6 +162,20 @@ export function buildDentistJsonLd() {
       availableLanguage: ["Spanish"],
     },
     hasMap: siteInfo.mapsUrl,
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "09:00",
+        closes: "12:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "14:00",
+        closes: "17:00",
+      },
+    ],
   };
 }
 

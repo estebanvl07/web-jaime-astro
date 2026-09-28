@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Calendar, MapPin, Menu, Phone, X } from "lucide-react";
+import { Calendar, Clock, MapPin, Menu, Phone, X } from "lucide-react";
 import imgLogo from "@/imports/assets/e7e6e6e81c1d84b256dcdd0c0c907a708c46333a.avif?url";
 import { siteInfo } from "@/app/data/site";
 import { LazyImage } from "@/app/components/LazyImage";
@@ -119,6 +119,10 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
             <span className="truncate">
               {siteInfo.neighborhood}, {siteInfo.city}
             </span>
+          </p>
+          <p className="hidden min-w-0 items-center gap-1.5 md:flex">
+            <Clock size={12} className="shrink-0 text-brand-soft" aria-hidden />
+            <span className="truncate">{siteInfo.hours.compact}</span>
           </p>
           <a
             href={`tel:${siteInfo.phoneE164}`}
