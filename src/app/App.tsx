@@ -19,6 +19,7 @@ import { YoutubeGallery } from "@/app/components/YoutubeGallery";
 import { sectionBadgeClass } from "@/app/components/SectionBadge";
 import { FaqList } from "@/app/components/FaqList";
 import { LazyMount } from "@/app/components/LazyMount";
+import { InfoBar } from "@/app/components/InfoBar";
 import { SiteHeader } from "@/app/components/SiteHeader";
 import { WhatsAppFloat } from "@/app/components/WhatsAppFloat";
 import { services as servicesData } from "@/app/data/services";
@@ -41,9 +42,10 @@ const HERO_IMAGE = "/images/hero.avif";
 const PLACE_IMAGES = [
   "/images/places/place_1.jpg",
   "/images/places/place_2.jpg",
+  "/images/places/consultorio.avif",
+  "/images/places/place_5.jpg",
   "/images/places/place_3.jpg",
   "/images/places/place_4.jpg",
-  "/images/places/place_5.jpg",
 ];
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
@@ -223,10 +225,11 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background font-['Inter',sans-serif] text-foreground transition-colors duration-300">
       <Seo path="/" jsonLd={homeJsonLd} />
+      <InfoBar />
       <SiteHeader />
 
       {/* HERO */}
-      <section className="relative min-h-dvh overflow-hidden">
+      <section className="relative min-h-[calc(100dvh-var(--info-bar-height))] overflow-hidden">
         <img
           src={HERO_IMAGE}
           alt="Dr. Jaime Pinzón, odontólogo especialista en ortodoncia"
@@ -260,7 +263,7 @@ export default function App() {
           }}
         />
 
-        <div className="relative z-[1] mx-auto flex min-h-dvh w-full max-w-[1320px] flex-col justify-center px-6 pb-10 pt-[calc(var(--header-offset)+1.5rem)] sm:px-8 sm:pb-12 lg:px-12 lg:pb-16 xl:px-16 2xl:px-12">
+        <div className="relative z-[1] mx-auto flex min-h-[calc(100dvh-var(--info-bar-height))] w-full max-w-[1320px] flex-col justify-center px-6 pb-10 pt-[calc(var(--header-offset)+1.5rem)] sm:px-8 sm:pb-12 lg:px-12 lg:pb-16 xl:px-16 2xl:px-12">
           <motion.div
             className="flex max-w-xl flex-col gap-4 sm:gap-5 lg:gap-6"
             variants={stagger}
@@ -576,7 +579,7 @@ export default function App() {
               transition={transition}
               className={`${SECTION_BADGE_CLASS} mb-6`}
             >
-              Nuestro enfoque
+              Herramientas y lugar
             </motion.span>
             <motion.h2
               variants={fadeUp}

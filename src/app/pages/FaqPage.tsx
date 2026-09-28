@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { FaqList } from "@/app/components/FaqList";
+import { InfoBar } from "@/app/components/InfoBar";
 import { SiteHeader } from "@/app/components/SiteHeader";
 import { WhatsAppFloat } from "@/app/components/WhatsAppFloat";
 import { faqGroups, faqs } from "@/app/data/faqs";
@@ -60,6 +61,7 @@ export default function FaqPage() {
         jsonLd={jsonLd}
       />
 
+      <InfoBar />
       <SiteHeader
         variant="inner"
         backLink={{ to: "/", label: "Volver al inicio", shortLabel: "Volver" }}

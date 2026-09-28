@@ -32,7 +32,8 @@
   --switch-background: #d4cdc2;
   --ring: #c4a056;
   --radius: 0.625rem;
-  --header-offset: 108px;
+  --info-bar-height: 36px;
+  --header-offset: 68px;
 
   --font-weight-medium: 500;
   --font-weight-normal: 400;
@@ -186,6 +187,12 @@
   --color-page-soft: var(--page-soft);
   --color-surface-glass: var(--surface-glass);
   --color-surface-glass-border: var(--surface-glass-border);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-offset: 72px;
+  }
 }
 
 @layer base {

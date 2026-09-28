@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
 import { youtubeVideos, type YoutubeVideo } from "@/app/data/youtube";
+import "swiper/css";
 
 function embedUrl(id: string) {
   return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
@@ -30,7 +33,7 @@ function VideoThumb({
         src={thumbnailUrl(video.id)}
         alt=""
         loading="lazy"
-        className="absolute inset-0 size-full object-cover"
+        className="absolute inset-0 size-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
       />
       <span className="absolute inset-0 bg-brand-dark/25 transition-colors group-hover:bg-brand-dark/40" />
       <span className="absolute top-1/2 left-1/2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand text-brand-dark shadow-lg">
@@ -45,6 +48,7 @@ function VideoThumb({
 
 export function YoutubeGallery() {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [shortsSwiper, setShortsSwiper] = useState<SwiperType | null>(null);
   const [active, setActive] = useState<number | null>(null);
   const video = active == null ? null : youtubeVideos[active];
 
@@ -81,17 +85,47 @@ export function YoutubeGallery() {
           ))}
         </div>
 
-        <div className="flex gap-3 overflow-x-auto pb-1">
-          {shorts.map((item) => (
-            <VideoThumb
-              key={item.id}
-              video={item}
-              onPlay={() =>
-                setActive(youtubeVideos.findIndex((entry) => entry.id === item.id))
-              }
-              className="aspect-[9/16] w-[168px] shrink-0 rounded-[24px] sm:w-[190px]"
-            />
-          ))}
+        <div>
+          <Swiper
+            slidesPerView="auto"
+            spaceBetween={12}
+            grabCursor
+            rewind
+            onSwiper={setShortsSwiper}
+            className="w-full"
+          >
+            {shorts.map((item) => (
+              <SwiperSlide key={item.id} className="!w-[168px] sm:!w-[190px]">
+                <VideoThumb
+                  video={item}
+                  onPlay={() =>
+                    setActive(
+                      youtubeVideos.findIndex((entry) => entry.id === item.id),
+                    )
+                  }
+                  className="aspect-[9/16] w-full rounded-[24px]"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <div className="mt-4 flex items-center justify-center gap-3">
+            <button
+              type="button"
+              aria-label="Short anterior"
+              onClick={() => shortsSwiper?.slidePrev()}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/25 bg-card text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              <ChevronLeft size={22} strokeWidth={2.25} />
+            </button>
+            <button
+              type="button"
+              aria-label="Short siguiente"
+              onClick={() => shortsSwiper?.slideNext()}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/25 bg-card text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              <ChevronRight size={22} strokeWidth={2.25} />
+            </button>
+          </div>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Calendar, Clock, MapPin, Menu, Phone, X } from "lucide-react";
+import { Calendar, Menu, X } from "lucide-react";
 import imgLogo from "@/imports/assets/e7e6e6e81c1d84b256dcdd0c0c907a708c46333a.avif?url";
 import { siteInfo } from "@/app/data/site";
 import { LazyImage } from "@/app/components/LazyImage";
@@ -86,15 +86,32 @@ function BrandLockup({
 export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [headerTop, setHeaderTop] = useState(36);
   const reduceMotion = useReducedMotion();
 
   const solid = variant === "inner" || scrolled || menuOpen;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    const onScroll = () => {
+      const nextScrolled = window.scrollY > 16;
+      setScrolled((current) =>
+        current === nextScrolled ? current : nextScrolled,
+      );
+      const bar = document.getElementById("info-bar");
+      const nextTop = Math.max(
+        0,
+        bar ? bar.getBoundingClientRect().bottom : 0,
+      );
+      setHeaderTop((current) => (current === nextTop ? current : nextTop));
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -107,37 +124,7 @@ export function SiteHeader({ variant = "home", backLink }: SiteHeaderProps) {
   }, [menuOpen]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div
-        className={`text-[11px] text-white/75 sm:text-xs ${
-          solid ? "bg-brand-dark" : "bg-transparent"
-        }`}
-      >
-        <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-12">
-          <p className="flex min-w-0 items-center gap-1.5">
-            <MapPin
-              size={12}
-              className="shrink-0 text-brand-soft"
-              aria-hidden
-            />
-            <span className="truncate">
-              {siteInfo.neighborhood}, {siteInfo.city}
-            </span>
-          </p>
-          <p className="hidden min-w-0 items-center gap-1.5 md:flex">
-            <Clock size={12} className="shrink-0 text-brand-soft" aria-hidden />
-            <span className="truncate">{siteInfo.hours.compact}</span>
-          </p>
-          <a
-            href={`tel:${siteInfo.phoneE164}`}
-            className="inline-flex shrink-0 items-center gap-1.5 text-white/90 transition-colors hover:text-white"
-          >
-            <Phone size={12} className="text-brand-soft" aria-hidden />
-            {siteInfo.phone}
-          </a>
-        </div>
-      </div>
-
+    <header className="fixed inset-x-0 z-40" style={{ top: headerTop }}>
       <div
         className={`border-b transition-[background-color,border-color,box-shadow] duration-300 ${
           solid

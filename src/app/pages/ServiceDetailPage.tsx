@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Check, Calendar } from "lucide-react";
 import { ServiceImage } from "@/app/components/ServiceImage";
 import { ServiceLogoMark } from "@/app/components/ServiceLogoMark";
+import { InfoBar } from "@/app/components/InfoBar";
 import { SiteHeader } from "@/app/components/SiteHeader";
 import { WhatsAppFloat } from "@/app/components/WhatsAppFloat";
 import { getServiceBySlug, services } from "@/app/data/services";
@@ -90,6 +91,7 @@ export default function ServiceDetailPage() {
         path={`/servicios/${service.slug}`}
         jsonLd={serviceJsonLd}
       />
+      <InfoBar />
       <SiteHeader
         variant="inner"
         backLink={{
