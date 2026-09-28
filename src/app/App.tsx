@@ -746,8 +746,9 @@ export default function App() {
                 transition={transition}
                 className="max-w-xl text-base leading-relaxed text-muted-foreground"
               >
-                Publicaciones de {siteInfo.youtube} en YouTube: los dos videos
-                del canal y los shorts que acompañan los tratamientos.
+                Conoce cómo son nuestros procedimientos en el consultorio.
+                En el canal mostramos ortodoncia, encía y estética, tal como
+                los atendemos aquí.
               </motion.p>
             </div>
             <motion.a
